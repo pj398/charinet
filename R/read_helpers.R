@@ -20,6 +20,8 @@
 #'
 #' @return A named list containing the event list, node list and an adjacency
 #'   matrix derived from the event list.
+#'
+#' @export
 qread_film <- function(events_file, nodes_file, start_at = 3) {
   # First, let's read in the event list and the node list
   lines <- read.csv(events_file, sep = ',', stringsAsFactors = FALSE)
@@ -67,6 +69,8 @@ qread_film <- function(events_file, nodes_file, start_at = 3) {
 #'   the first recipient dummy column in the data, which is set by default to 4.
 #'
 #' @return A message reportinf the results of the check.
+#'
+#' @export
 check_for_errors <- function(adjacency = NULL, event_list = NULL,
                              start_at = 4) {
   if(is.null(adjacency)) {
