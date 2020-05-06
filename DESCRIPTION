@@ -1,0 +1,19 @@
+Package: movienet
+Type: Package
+Title: A Package for Basic Character Interaction Network Analysis
+Version: 0.0.1.9000
+Authors@R: person("Pete", "Jones", email = "petejones398@gmail.com", 
+    role=c("aut", "cre"))
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: This package contains a number of functions for working with
+    character interaction network data. The project is designed to work with
+    time-ordered movie dialogue data, but many functions can work on any data 
+    consisting of similarly structured event lists.
+Depends: 
+    R (>= 3.6.0)
+Imports: 
+    movienetData (>= 0.1.0)
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.0.2
