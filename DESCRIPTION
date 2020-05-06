@@ -1,10 +1,11 @@
 Package: movienet
 Type: Package
 Title: A Package for Basic Character Interaction Network Analysis
-Version: 0.0.1.9000
+Version: 0.0.1.9001
 Authors@R: person("Pete", "Jones", email = "petejones398@gmail.com", 
     role=c("aut", "cre"))
-Maintainer: The package maintainer <yourself@somewhere.net>
+URL: https://github.com/pj398/movienet
+BugReports: https://github.com/pj398/movienet/issues
 Description: This package contains a number of functions for working with
     character interaction network data. The project is designed to work with
     time-ordered movie dialogue data, but many functions can work on any data 
