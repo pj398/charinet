@@ -4,7 +4,7 @@
 \alias{qread_film}
 \title{Read in character interaction network data from standardised input format}
 \usage{
-qread_film(events_file, nodes_file, start_at = 3)
+qread_film(events_file, nodes_file, start_at = 3, check_errors = TRUE)
 }
 \arguments{
 \item{events_file}{The event list, containing at least a sender ID column and
@@ -15,6 +15,11 @@ characters in the events list.}
 
 \item{start_at}{The column containing the sender IDs, followed by dummy
 variables for each character.}
+
+\item{check_errors}{If TRUE, the function checks for common data input
+errors. It looks for characters with self-ties, empty rows where no
+recipient was inputted, and any values other than 1 and 0 in the recipient
+dummy columns. Returns a message reporting the results of the checks.}
 }
 \value{
 A named list containing the event list, node list and an adjacency
