@@ -11,9 +11,11 @@ Description: This package contains a number of functions for working with
     time-ordered movie dialogue data, but many functions can work on any data 
     consisting of similarly structured event lists.
 Depends: 
+    movienetData (>= 0.1.0),
     R (>= 3.6.0)
 Imports: 
-    movienetData (>= 0.1.0)
+    plyr (>= 1.8.4),
+    tidyr (>= 1.0.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

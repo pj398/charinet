@@ -8,6 +8,7 @@
 #' For more information visit \url{https://github.com/pj398/movienet}.
 #'
 #' @importFrom utils read.csv
+#' @importFrom magrittr %>%
 #'
 #' @docType package
 #' @name movienet

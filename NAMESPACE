@@ -2,5 +2,7 @@
 
 export(adj_from_events)
 export(narrative_centrality)
+export(narrative_centrality2)
 export(qread_film)
+importFrom(magrittr,"%>%")
 importFrom(utils,read.csv)
