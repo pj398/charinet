@@ -1,7 +1,7 @@
 Package: movienet
 Type: Package
 Title: A Package for Basic Character Interaction Network Analysis
-Version: 0.0.1.9001
+Version: 0.0.1.9002
 Authors@R: person("Pete", "Jones", email = "petejones398@gmail.com", 
     role=c("aut", "cre"))
 URL: https://github.com/pj398/movienet
