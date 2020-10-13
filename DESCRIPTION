@@ -1,7 +1,7 @@
 Package: movienet
 Type: Package
 Title: A Package for Basic Character Interaction Network Analysis
-Version: 0.0.1.9002
+Version: 0.0.1.9003
 Authors@R: person("Pete", "Jones", email = "petejones398@gmail.com", 
     role=c("aut", "cre"))
 URL: https://github.com/pj398/movienet
@@ -11,10 +11,13 @@ Description: This package contains a number of functions for working with
     time-ordered movie dialogue data, but many functions can work on any data 
     consisting of similarly structured event lists.
 Depends: 
-    movienetData (>= 0.1.0),
     R (>= 3.6.0)
 Imports: 
-    plyr (>= 1.8.4),
+    magrittr, 
+    movienetData (>= 0.1.0), 
+    dplyr (>= 1.0.0),
+    readr (>= 1.3.1),
+    tibble (>= 2.1.3),
     tidyr (>= 1.0.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
