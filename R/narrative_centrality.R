@@ -38,7 +38,7 @@
 #'
 #' @return If \code{mode = "out"} or \code{mode = "in"}, an N-by-T matrix is
 #'   returned, where N is the total number of characters in the event list and T
-#'   is the total number of interactions in the event list. Each cell [n,t] in
+#'   is the total number of interactions in the event list. Each cell [n, t] in
 #'   this matrix represents the score of character n at time t. If \code{mode =
 #'   "both"}, a named list of length 2 is returned containing first the "out"
 #'   matrix and second the "in" matrix.
@@ -65,17 +65,21 @@ narrative_centrality <- function(event_list,
                                  wp = 0.01,
                                  normalised = TRUE,
                                  start_at = 1) {
-  C_in <- matrix(1, length(chars), nrow(event_list))
-  C_out <- matrix(1, length(chars), nrow(event_list))
-  C_in_norm <- matrix(1, length(chars), nrow(event_list))
-  C_out_norm <- matrix(1, length(chars), nrow(event_list))
+  C_in <- matrix(1, (ncol(event_list) - start_at), nrow(event_list))
+  C_out <- matrix(1, (ncol(event_list) - start_at), nrow(event_list))
+  C_in_norm <- matrix(1, (ncol(event_list) - start_at), nrow(event_list))
+  C_out_norm <- matrix(1, (ncol(event_list) - start_at), nrow(event_list))
   if(is.null(chars)) {
-    chars <- rownames(event_list)[start_at + 1:ncol(event_list)]
+    chars <- colnames(event_list)[(start_at + 1):ncol(event_list)]
   }
   rownames(C_in) <- chars
+  colnames(C_in) <- paste("event", seq.int(1:nrow(event_list)), sep = "")
   rownames(C_in_norm) <- chars
+  colnames(C_in_norm) <- paste("event", seq.int(1:nrow(event_list)), sep = "")
   rownames(C_out) <- chars
+  colnames(C_out) <- paste("event", seq.int(1:nrow(event_list)), sep = "")
   rownames(C_out_norm) <- chars
+  colnames(C_out_norm) <- paste("event", seq.int(1:nrow(event_list)), sep = "")
   # Compute the scores
   C_in_t <- matrix(1, length(chars), 1)
   C_out_t <- matrix(1, length(chars), 1)
@@ -114,4 +118,36 @@ narrative_centrality <- function(event_list,
       return(C_out)
     }
   }
+}
+
+#' Convert narrative centrality scores to tidy format
+#'
+#' @description A simple helper function which converts the N-by-T matrix of
+#'   narrative centrality scores into a tidy data format which plays nicely with
+#'   ggplot2 and other tidyverse packages.
+#'
+#' @param input_scores The N-by-T matrix exported from the
+#'   \code{narrative_centrality} function.
+#'
+#' @return A tibble.
+#'
+#' @examples
+#' tfa <- movienetData::starwars_01
+#' tfa_scores <- narrative_centrality(tfa$event_list,
+#'                                    chars = tfa[[2]]$char_name,
+#'                                    wp = 0.01,
+#'                                    start_at = 3)
+#' my_tidy_scores <- nc_tidy(tfa_scores$out_scores)
+#'
+#' @export
+nc_tidy <- function(input_scores) {
+  tidy_scores <- tibble::as_tibble(input_scores, rownames = "Character") %>%
+    tidyr::pivot_longer(cols = !Character,
+                        names_to = "Event",
+                        names_prefix = "event",
+                        values_to = "Score") %>%
+    dplyr::mutate(Event = readr::parse_integer(Event)) %>%
+    dplyr::relocate(Event, .before = everything()) %>%
+    dplyr::arrange(Event)
+  return(tidy_scores)
 }

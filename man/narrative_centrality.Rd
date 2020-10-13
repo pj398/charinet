@@ -54,7 +54,7 @@ column. The default is 1.}
 \value{
 If \code{mode = "out"} or \code{mode = "in"}, an N-by-T matrix is
   returned, where N is the total number of characters in the event list and T
-  is the total number of interactions in the event list. Each cell [n,t] in
+  is the total number of interactions in the event list. Each cell [n, t] in
   this matrix represents the score of character n at time t. If \code{mode =
   "both"}, a named list of length 2 is returned containing first the "out"
   matrix and second the "in" matrix.
