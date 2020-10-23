@@ -6,7 +6,7 @@
 \usage{
 narrative_centrality(
   event_list,
-  chars = NULL,
+  char_names = NULL,
   mode = "both",
   wp = 0.01,
   normalised = TRUE,
@@ -23,8 +23,8 @@ data, this means being spoken to) at time t and 0 otherwise. For example,
 column 2 contains the dummy variables for the character whose ID is 1, and
 so on.}
 
-\item{chars}{An optional vector of character names to be used to label the
-scores matrix returned by the function (must be of equal length to the
+\item{char_names}{An optional vector of character names to be used to label
+the scores matrix returned by the function (must be of equal length to the
 number of unique characters in the event list). If not supplied, names will
 be inferred from the event list.}
 
@@ -44,9 +44,9 @@ score at time t is divided by the sum of all characters' scores, such that
 the sum of all character scores at time t is always equal to 1. When
 \code{normalised = FALSE}, absolute scores are returned.}
 
-\item{start_at}{The column in the input data (as structured in the way
-described above) containing the sender IDs. This ensures the function
-always works the same way, even when the input event list contains
+\item{start_at}{The position of the column in the input data (as structured
+in the way described above) containing the sender IDs. This ensures the
+function always works the same way, even when the input event list contains
 different numbers of additional event-level variables (e.g. weight or
 type), so long as these columns are positioned prior to the sender ID
 column. The default is 1.}
@@ -74,7 +74,7 @@ This function calculates the dynamic centrality scores of
 \examples{
 tfa <- movienetData::starwars_01
 tfa_scores <- narrative_centrality(tfa$event_list,
-                                   chars = tfa[[2]]$char_name,
+                                   char_names = tfa[[2]]$char_name,
                                    wp = 0.01,
                                    start_at = 3)
 
