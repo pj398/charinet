@@ -62,3 +62,35 @@ story_heatmap <- function(event_list,
   }
   return(heatmat)
 }
+
+#' Convert heatmap matrix to tidy format
+#'
+#' @description A simple helper function which converts the character-by-chunk
+#'   heatmap matrix into a tidy data format which plays nicely with ggplot2 and
+#'   other tidyverse packages.
+#'
+#' @param input_heatmap The character-by-chunk heatmap matrix produced by the
+#'   \code{story_heatmap} function.
+#'
+#' @return A tibble.
+#'
+#' @examples
+#' tfa <- movienetData::starwars_01
+#' my_heatmap <- story_heatmap(event_list = tfa$event_list,
+#'                             char_names = tfa$node_list$char_name,
+#'                             story_chunk_col = 2,
+#'                             start_at = 3)
+#' my_tidy_heatmap <- hm_tidy(my_heatmap)
+#'
+#' @export
+hm_tidy <- function(input_heatmap) {
+  tidy_heatmap <- tibble::as_tibble(input_heatmap, rownames = "Character") %>%
+    tidyr::pivot_longer(cols = !Character,
+                        names_to = "Chunk",
+                        names_prefix = "chunk",
+                        values_to = "Activity") %>%
+    dplyr::mutate(Chunk = readr::parse_integer(Chunk)) %>%
+    dplyr::relocate(Chunk, .before = everything()) %>%
+    dplyr::arrange(Chunk)
+  return(tidy_heatmap)
+}

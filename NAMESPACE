@@ -2,6 +2,7 @@
 
 export("%>%")
 export(adj_from_events)
+export(hm_tidy)
 export(narrative_centrality)
 export(nc_tidy)
 export(qread_film)
