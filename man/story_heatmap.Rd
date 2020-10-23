@@ -46,5 +46,7 @@ my_heatmap <- story_heatmap(event_list = tfa$event_list,
                             char_names = tfa$node_list$char_name,
                             story_chunk_col = 2,
                             start_at = 3)
+# How many times does character 5 speak in scene 6?
+my_heatmap[5, 6]
 
 }
