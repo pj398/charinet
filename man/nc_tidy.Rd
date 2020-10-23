@@ -21,7 +21,7 @@ A simple helper function which converts the N-by-T matrix of
 \examples{
 tfa <- movienetData::starwars_01
 tfa_scores <- narrative_centrality(tfa$event_list,
-                                   chars = tfa[[2]]$char_name,
+                                   char_names = tfa[[2]]$char_name,
                                    wp = 0.01,
                                    start_at = 3)
 my_tidy_scores <- nc_tidy(tfa_scores$out_scores)
