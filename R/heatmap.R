@@ -2,10 +2,18 @@
 #' by story chunks.
 #'
 #' @description  This function calculates the number of interactions initated by
-#'   each character within each story chunk. To calculate this, the events in
-#'   the event list need to be indexed by a variable indicating the story chunk.
-#'   Story chunks could be scenes, chapters, or some other arbitrary division of
-#'   the event list into temporal segments such as quartiles or deciles.
+#'   each character within each story chunk. Story chunks could be scenes,
+#'   chapters, or some other arbitrary division of the event list into temporal
+#'   segments such as quartiles or deciles. This produces a
+#'   character-by-story-chunk matrix which can be used to generate a heatmap of
+#'   character activity over the course of a narrative.
+#'
+#'   For pre-defined story chunks (e.g. scenes or chapters), the user must
+#'   specify (via \code{story_chunk_col}) a column in the event list which
+#'   represents a variable indexing the chunk ID of each interaction.
+#'   Alternatively, the function can automatically chunk the event list into
+#'   equally-sized segments such as quartiles using the \code{n_chunks}
+#'   argument.
 #'
 #' @param event_list An event list containing the time-ordered interactions. The
 #'   function expects a particular format (described in detail elsewhere in the
@@ -15,18 +23,26 @@
 #'   take the value 1 if that character is a target of the interaction, and 0
 #'   otherwise.
 #' @param char_names An optional vector of character names to be used to label
-#'   the rows of the matrix returned by the function (must be of equal length to
-#'   the number of unique characters in the event list). If not supplied, names
-#'   will be inferred from the event list.
-#' @param story_chunk_col The position of the column in the input event_list
-#'   which indexes the events by story chunk.
-#' @param start_at The position of the column in the input event_list which
-#'   indexes the event by the sender ID (e.g. for dialogue data, this will be
-#'   the speaker ID column).
+#'   the rows of the matrix returned by the function. This is useful when the
+#'   sender ID column contains the numeric IDs of characters rather than the
+#'   character names. If specified, this vector must be of equal length to the
+#'   number of unique characters in the event list, and must be ordered by
+#'   character ID number. If not supplied, names will be assigned based on the
+#'   unique values of the sender ID column.
+#' @param n_chunks If a numeric value is passed to this argument, the event list
+#'   will be "chunked" into that many equally-sized segments. This will override
+#'   the \code{story_chunk_col} argument which is for specifying user-defined
+#'   story chunk variables.
+#' @param story_chunk_col The position of the column in the input
+#'   \code{event_list} which indexes the events by story chunk. This argument
+#'   will be ignored unless \code{n_chunks = NULL}.
+#' @param start_at The position of the column in the input \code{event_list}
+#'   which indexes the event by the sender ID (e.g. for dialogue data, this will
+#'   be the speaker ID column).
 #'
 #' @return A matrix is returned, with each row corresponding to a character and
 #'   each column corresponding to a story chunk. The value of cell [i, j] is the
-#'   number of interactions sent by character i in chunk j.
+#'   number of interactions sent by character \emph{i} in chunk \emph{j}.
 #'
 #' @examples
 #' tfa <- movienetData::starwars_01
@@ -40,26 +56,73 @@
 #' @export
 story_heatmap <- function(event_list,
                           char_names = NULL,
-                          story_chunk_col = 2,
+                          n_chunks = NULL,
+                          story_chunk_col = NULL,
                           start_at = 3) {
-  heatmat <- matrix(0,
-                    nrow = length(unique(event_list[ , start_at])),
-                    ncol = length(unique(event_list[ , story_chunk_col])))
 
-  if(is.null(char_names)) {
-    char_names <- colnames(event_list)[(start_at + 1):ncol(event_list)]
-  }
-  rownames(heatmat) <- char_names
-  colnames(heatmat) <- paste("chunk", seq.int(1:ncol(heatmat)), sep = "")
+  n_events <- nrow(event_list)
 
-  for (c in unique(event_list[ , start_at])) {
-    for (scene in unique(event_list[ , story_chunk_col])) {
-      heatmat[which(unique(event_list[ , start_at]) == c),
-              which(unique(event_list[ , story_chunk_col]) == scene)] <- length(
-                which(event_list[ , story_chunk_col] == scene &
-                                          event_list[ , start_at] == c))
+  if(!is.null(n_chunks)) {
+
+    heatmat <- matrix(0,
+                      nrow = length(unique(event_list[ , start_at])),
+                      ncol = n_chunks)
+
+    chunk_id <- vector(mode = "numeric", length = n_events)
+
+    for (i in 1:n_events) {
+      for (chunk in 1:n_chunks) {
+        if(i <= (n_events / n_chunks) * chunk &
+           i > ((n_events / n_chunks) * (chunk - 1))) {
+          chunk_id[i] <- chunk
+        }
+      }
+    }
+
+    for (c in unique(event_list[ , start_at])) {
+      for (scene in unique(chunk_id)) {
+        heatmat[which(unique(event_list[ , start_at]) == c),
+                which(unique(chunk_id) == scene)] <- length(
+                  which(chunk_id == scene &
+                          event_list[ , start_at] == c))
+      }
+    }
+  } else {
+
+    if(is.null(story_chunk_col)) {
+      stop("Neither `n_chunks` nor `story_chunk_col` has been specified.")
+    }
+
+    heatmat <- matrix(0,
+                      nrow = length(unique(event_list[ , start_at])),
+                      ncol = length(unique(event_list[ , story_chunk_col])))
+
+    for (c in unique(event_list[ , start_at])) {
+      for (scene in unique(event_list[ , story_chunk_col])) {
+        heatmat[which(unique(event_list[ , start_at]) %in% c),
+                which(unique(event_list[ , story_chunk_col]) == scene)] <- length(
+                  which(event_list[ , story_chunk_col] == scene &
+                          event_list[ , start_at] == c))
+      }
     }
   }
+
+  if(is.null(char_names)) {
+    rownames(heatmat) <- unique(event_list[ , start_at])
+  } else {
+    if(is.numeric(unique(event_list[ , start_at]))) {
+      rownames(heatmat) <- char_names[unique(event_list[ , start_at])]
+    } else {
+      rownames(heatmat) <- unique(event_list[ , start_at])
+      message("A vector of character names was passed to `char_names` but the
+            values in the `start_at` column of `event_list` do not correspond
+            to numeric character IDs. As such, the `char_names` vector has been
+            ignored and row names have been assigned based on how the characters
+            appear in the `start_at` column of `event_list`.")
+      }
+    }
+  colnames(heatmat) <- paste("chunk", seq.int(1:ncol(heatmat)), sep = "")
+
   return(heatmat)
 }
 

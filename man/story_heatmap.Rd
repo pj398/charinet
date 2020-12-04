@@ -5,7 +5,13 @@
 \title{Generate a character by story-chunk matrix for analysing character activity
 by story chunks.}
 \usage{
-story_heatmap(event_list, char_names = NULL, story_chunk_col = 2, start_at = 3)
+story_heatmap(
+  event_list,
+  char_names = NULL,
+  n_chunks = NULL,
+  story_chunk_col = NULL,
+  start_at = 3
+)
 }
 \arguments{
 \item{event_list}{An event list containing the time-ordered interactions. The
@@ -17,28 +23,45 @@ take the value 1 if that character is a target of the interaction, and 0
 otherwise.}
 
 \item{char_names}{An optional vector of character names to be used to label
-the rows of the matrix returned by the function (must be of equal length to
-the number of unique characters in the event list). If not supplied, names
-will be inferred from the event list.}
+the rows of the matrix returned by the function. This is useful when the
+sender ID column contains the numeric IDs of characters rather than the
+character names. If specified, this vector must be of equal length to the
+number of unique characters in the event list, and must be ordered by
+character ID number. If not supplied, names will be assigned based on the
+unique values of the sender ID column.}
 
-\item{story_chunk_col}{The position of the column in the input event_list
-which indexes the events by story chunk.}
+\item{n_chunks}{If a numeric value is passed to this argument, the event list
+will be "chunked" into that many equally-sized segments. This will override
+the \code{story_chunk_col} argument which is for specifying user-defined
+story chunk variables.}
 
-\item{start_at}{The position of the column in the input event_list which
-indexes the event by the sender ID (e.g. for dialogue data, this will be
-the speaker ID column).}
+\item{story_chunk_col}{The position of the column in the input
+\code{event_list} which indexes the events by story chunk. This argument
+will be ignored unless \code{n_chunks = NULL}.}
+
+\item{start_at}{The position of the column in the input \code{event_list}
+which indexes the event by the sender ID (e.g. for dialogue data, this will
+be the speaker ID column).}
 }
 \value{
 A matrix is returned, with each row corresponding to a character and
   each column corresponding to a story chunk. The value of cell [i, j] is the
-  number of interactions sent by character i in chunk j.
+  number of interactions sent by character \emph{i} in chunk \emph{j}.
 }
 \description{
 This function calculates the number of interactions initated by
-  each character within each story chunk. To calculate this, the events in
-  the event list need to be indexed by a variable indicating the story chunk.
-  Story chunks could be scenes, chapters, or some other arbitrary division of
-  the event list into temporal segments such as quartiles or deciles.
+  each character within each story chunk. Story chunks could be scenes,
+  chapters, or some other arbitrary division of the event list into temporal
+  segments such as quartiles or deciles. This produces a
+  character-by-story-chunk matrix which can be used to generate a heatmap of
+  character activity over the course of a narrative.
+
+  For pre-defined story chunks (e.g. scenes or chapters), the user must
+  specify (via \code{story_chunk_col}) a column in the event list which
+  represents a variable indexing the chunk ID of each interaction.
+  Alternatively, the function can automatically chunk the event list into
+  equally-sized segments such as quartiles using the \code{n_chunks}
+  argument.
 }
 \examples{
 tfa <- movienetData::starwars_01
