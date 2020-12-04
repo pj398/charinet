@@ -146,8 +146,8 @@ nc_tidy <- function(input_scores) {
                         names_to = "Event",
                         names_prefix = "event",
                         values_to = "Score") %>%
-    dplyr::mutate(Event = readr::parse_integer(Event)) %>%
-    dplyr::relocate(Event, .before = everything()) %>%
+    dplyr::mutate(Event = readr::parse_integer(.data$Event)) %>%
+    dplyr::relocate(Event, .before = dplyr::everything()) %>%
     dplyr::arrange(Event)
   return(tidy_scores)
 }
