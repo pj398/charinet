@@ -152,8 +152,49 @@ hm_tidy <- function(input_heatmap) {
                         names_to = "Chunk",
                         names_prefix = "chunk",
                         values_to = "Activity") %>%
-    dplyr::mutate(Chunk = readr::parse_integer(Chunk)) %>%
-    dplyr::relocate(Chunk, .before = everything()) %>%
+    dplyr::mutate(Chunk = readr::parse_integer(.data$Chunk)) %>%
+    dplyr::relocate(Chunk, .before = dplyr::everything()) %>%
     dplyr::arrange(Chunk)
   return(tidy_heatmap)
+}
+
+#' Plot heatmap using ggplot2
+#'
+#' @description Create a quick heatmap visualisation of character activity by
+#'   story chunks using ggplot2.
+#'
+#' @param input_heatmap The tidy-formatted heatmap data, as produced by passing
+#'   the matrix returned by the \code{story_heatmap} function through the
+#'   \code{hm_tidy} function.
+#'
+#' @return A ggplot2 plot.
+#'
+#' @examples
+#' tfa <- movienetData::starwars_01
+#' story_heatmap(tfa$event_list,
+#'               char_names = tfa$node_list$char_name,
+#'               n_chunks = 4) %>%
+#'   hm_tidy() %>%
+#'   plot_heatmap()
+#'
+#' @importFrom ggplot2 ggplot aes element_blank
+#' @export
+plot_heatmap <- function(input_heatmap) {
+  ggplot(data = input_heatmap) +
+    ggplot2::geom_tile(aes(x = .data$Chunk,
+                           y = stats::reorder(.data$Character,
+                                       dplyr::desc(.data$Character)),
+                           fill = .data$Activity),
+                       colour = "#FFFFFF") +
+    ggplot2::scale_fill_gradient(low = "#f7f7fc", high = "#726d9c") +
+    ggplot2::scale_x_continuous(name = "Story chunk", expand = c(0.005, 0)) +
+    ggplot2::scale_y_discrete(name = "Character",
+                              limits = rev(levels(.data$Character))) +
+    ggplot2::theme_light() +
+    ggplot2::theme(legend.position = "none",
+                   axis.ticks = element_blank(),
+                   panel.border = element_blank(),
+                   #panel.grid.major.y = element_blank(),
+                   panel.grid.minor.x = element_blank(),
+                   panel.grid.major.x = element_blank())
 }

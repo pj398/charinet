@@ -9,6 +9,7 @@
 #'
 #' @importFrom utils read.csv
 #' @importFrom magrittr %>%
+#' @importFrom rlang .data
 #'
 #' @docType package
 #' @name charinet
