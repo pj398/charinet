@@ -72,7 +72,7 @@ This function calculates the dynamic centrality scores of
 }
 
 \examples{
-tfa <- movienetData::starwars_01
+tfa <- movienetdata::starwars_01
 tfa_scores <- narrative_centrality(tfa$event_list,
                                    char_names = tfa[[2]]$char_name,
                                    wp = 0.01,

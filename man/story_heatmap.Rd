@@ -64,7 +64,7 @@ This function calculates the number of interactions initated by
   argument.
 }
 \examples{
-tfa <- movienetData::starwars_01
+tfa <- movienetdata::starwars_01
 my_heatmap <- story_heatmap(event_list = tfa$event_list,
                             char_names = tfa$node_list$char_name,
                             story_chunk_col = 2,

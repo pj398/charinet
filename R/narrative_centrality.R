@@ -44,7 +44,7 @@
 #'   matrix and second the "in" matrix.
 #'
 #' @examples
-#' tfa <- movienetData::starwars_01
+#' tfa <- movienetdata::starwars_01
 #' tfa_scores <- narrative_centrality(tfa$event_list,
 #'                                    char_names = tfa[[2]]$char_name,
 #'                                    wp = 0.01,
@@ -132,7 +132,7 @@ narrative_centrality <- function(event_list,
 #' @return A tibble.
 #'
 #' @examples
-#' tfa <- movienetData::starwars_01
+#' tfa <- movienetdata::starwars_01
 #' tfa_scores <- narrative_centrality(tfa$event_list,
 #'                                    char_names = tfa[[2]]$char_name,
 #'                                    wp = 0.01,

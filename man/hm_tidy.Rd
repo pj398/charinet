@@ -19,7 +19,7 @@ A simple helper function which converts the character-by-chunk
   other tidyverse packages.
 }
 \examples{
-tfa <- movienetData::starwars_01
+tfa <- movienetdata::starwars_01
 my_heatmap <- story_heatmap(event_list = tfa$event_list,
                             char_names = tfa$node_list$char_name,
                             story_chunk_col = 2,

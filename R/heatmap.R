@@ -45,7 +45,7 @@
 #'   number of interactions sent by character \emph{i} in chunk \emph{j}.
 #'
 #' @examples
-#' tfa <- movienetData::starwars_01
+#' tfa <- movienetdata::starwars_01
 #' my_heatmap <- story_heatmap(event_list = tfa$event_list,
 #'                             char_names = tfa$node_list$char_name,
 #'                             story_chunk_col = 2,
@@ -138,7 +138,7 @@ story_heatmap <- function(event_list,
 #' @return A tibble.
 #'
 #' @examples
-#' tfa <- movienetData::starwars_01
+#' tfa <- movienetdata::starwars_01
 #' my_heatmap <- story_heatmap(event_list = tfa$event_list,
 #'                             char_names = tfa$node_list$char_name,
 #'                             story_chunk_col = 2,
@@ -170,7 +170,7 @@ hm_tidy <- function(input_heatmap) {
 #' @return A ggplot2 plot.
 #'
 #' @examples
-#' tfa <- movienetData::starwars_01
+#' tfa <- movienetdata::starwars_01
 #' story_heatmap(tfa$event_list,
 #'               char_names = tfa$node_list$char_name,
 #'               n_chunks = 4) %>%
