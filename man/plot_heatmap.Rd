@@ -2,7 +2,7 @@
 % Please edit documentation in R/heatmap.R
 \name{plot_heatmap}
 \alias{plot_heatmap}
-\title{Convert heatmap matrix to tidy format}
+\title{Plot heatmap using ggplot2}
 \usage{
 plot_heatmap(input_heatmap)
 }
