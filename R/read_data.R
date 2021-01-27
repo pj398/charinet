@@ -84,11 +84,12 @@ qread_film <- function(events_file,
     } else {
       cat("No empty rows found.")
     }
+    cat("\n")
     # Check for other data entry errors (cell values not in c(0, 1))
     if(FALSE %in% unique(c(as.matrix(lines)[ , (start_at + 1):ncol(lines)]))
        %in% c("0", "1")) {
-      cat("\nData entry values: ",
-          unique(c(as.matrix(lines)[ , (start_at + 1):ncol(lines)])))
+      cat("Data entry values: ",
+          unique(c(as.matrix(lines)[ , (start_at + 1):ncol(lines)])), "\n")
     }
   }
 
