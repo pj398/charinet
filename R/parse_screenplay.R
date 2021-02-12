@@ -33,8 +33,8 @@
 #'
 #' @section References: Agarwal, Apoorv, Sriramkumar Balasubramanian, Jiehan
 #'   Zheng, and Sarthak Dash. ''Parsing Screenplays for Extracting Social
-#'   Networks from Movies.'' In Proceedings of the 3rd Workshop on Computational
-#'   Linguistics for Literature (CLfL), 50-58. Gothenburg, Sweden: Association
+#'   Networks from Movies.'' In \emph{Proceedings of the 3rd Workshop on Computational
+#'   Linguistics for Literature (CLfL)}, 50-58. Gothenburg, Sweden: Association
 #'   for Computational Linguistics, 2014.
 #'
 #' @examples

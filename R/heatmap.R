@@ -179,7 +179,6 @@ hm_tidy <- function(input_heatmap) {
 #'   hm_tidy() %>%
 #'   plot_heatmap()
 #'
-#' @importFrom ggplot2 ggplot aes element_blank
 #' @export
 plot_heatmap <- function(input_heatmap, cutoff = 0) {
   if(!requireNamespace("ggplot2", quietly = TRUE)) {
@@ -192,10 +191,10 @@ plot_heatmap <- function(input_heatmap, cutoff = 0) {
     dplyr::group_by(Character) %>%
     dplyr::mutate(nlines = sum(Activity)) %>%
     dplyr::filter(nlines > cutoff) %>%
-    ggplot(aes(x = .data$Chunk,
+    ggplot2::ggplot(ggplot2::aes(x = .data$Chunk,
                y = stats::reorder(.data$Character,
                                   dplyr::desc(.data$Character)))) +
-    ggplot2::geom_tile(aes(fill = .data$Activity), colour = "#FFFFFF") +
+    ggplot2::geom_tile(ggplot2::aes(fill = .data$Activity), colour = "#FFFFFF") +
     ggplot2::scale_fill_gradient(low = "#f7f7fc", high = "#726d9c") +
     ggplot2::scale_x_continuous(name = "Story chunk", expand = c(0.005, 0),
                                 n.breaks = n_chunks) +
@@ -203,9 +202,8 @@ plot_heatmap <- function(input_heatmap, cutoff = 0) {
                               limits = rev(levels(.data$Character))) +
     ggplot2::theme_light() +
     ggplot2::theme(legend.position = "none",
-                   axis.ticks = element_blank(),
-                   panel.border = element_blank(),
-                   panel.grid.major.y = element_blank(),
-                   # panel.grid.minor.x = element_blank(),
-                   panel.grid.major.x = element_blank())
+                   axis.ticks = ggplot2::element_blank(),
+                   panel.border = ggplot2::element_blank(),
+                   panel.grid.major.y = ggplot2::element_blank(),
+                   panel.grid.major.x = ggplot2::element_blank())
 }
