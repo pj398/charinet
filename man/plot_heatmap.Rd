@@ -4,12 +4,15 @@
 \alias{plot_heatmap}
 \title{Plot heatmap using ggplot2}
 \usage{
-plot_heatmap(input_heatmap)
+plot_heatmap(input_heatmap, cutoff = 0)
 }
 \arguments{
 \item{input_heatmap}{The tidy-formatted heatmap data, as produced by passing
 the matrix returned by the \code{story_heatmap} function through the
 \code{hm_tidy} function.}
+
+\item{cutoff}{A numeric value to be used to filter the visualisation to only
+include those characters who speak more than \code{cutoff} number of lines.}
 }
 \value{
 A ggplot2 plot.

@@ -10,7 +10,7 @@ story_heatmap(
   char_names = NULL,
   n_chunks = NULL,
   story_chunk_col = NULL,
-  start_at = 3
+  from = 3
 )
 }
 \arguments{
@@ -39,7 +39,7 @@ story chunk variables.}
 \code{event_list} which indexes the events by story chunk. This argument
 will be ignored unless \code{n_chunks = NULL}.}
 
-\item{start_at}{The position of the column in the input \code{event_list}
+\item{from}{The position of the column in the input \code{event_list}
 which indexes the event by the sender ID (e.g. for dialogue data, this will
 be the speaker ID column).}
 }
@@ -68,7 +68,7 @@ tfa <- movienetdata::starwars_01
 my_heatmap <- story_heatmap(event_list = tfa$event_list,
                             char_names = tfa$node_list$char_name,
                             story_chunk_col = 2,
-                            start_at = 3)
+                            from = 3)
 # How many times does character 5 speak in scene 6?
 my_heatmap[5, 6]
 

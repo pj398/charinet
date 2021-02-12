@@ -36,7 +36,7 @@
 #' @param story_chunk_col The position of the column in the input
 #'   \code{event_list} which indexes the events by story chunk. This argument
 #'   will be ignored unless \code{n_chunks = NULL}.
-#' @param start_at The position of the column in the input \code{event_list}
+#' @param from The position of the column in the input \code{event_list}
 #'   which indexes the event by the sender ID (e.g. for dialogue data, this will
 #'   be the speaker ID column).
 #'
@@ -49,7 +49,7 @@
 #' my_heatmap <- story_heatmap(event_list = tfa$event_list,
 #'                             char_names = tfa$node_list$char_name,
 #'                             story_chunk_col = 2,
-#'                             start_at = 3)
+#'                             from = 3)
 #' # How many times does character 5 speak in scene 6?
 #' my_heatmap[5, 6]
 #'
@@ -58,14 +58,14 @@ story_heatmap <- function(event_list,
                           char_names = NULL,
                           n_chunks = NULL,
                           story_chunk_col = NULL,
-                          start_at = 3) {
+                          from = 3) {
 
   n_events <- nrow(event_list)
 
   if(!is.null(n_chunks)) {
 
     heatmat <- matrix(0,
-                      nrow = length(unique(event_list[ , start_at])),
+                      nrow = length(unique(event_list[ , from])),
                       ncol = n_chunks)
 
     chunk_id <- vector(mode = "numeric", length = n_events)
@@ -79,12 +79,12 @@ story_heatmap <- function(event_list,
       }
     }
 
-    for (c in unique(event_list[ , start_at])) {
+    for (c in unique(event_list[ , from])) {
       for (scene in unique(chunk_id)) {
-        heatmat[which(unique(event_list[ , start_at]) == c),
+        heatmat[which(unique(event_list[ , from]) == c),
                 which(unique(chunk_id) == scene)] <- length(
                   which(chunk_id == scene &
-                          event_list[ , start_at] == c))
+                          event_list[ , from] == c))
       }
     }
   } else {
@@ -94,31 +94,31 @@ story_heatmap <- function(event_list,
     }
 
     heatmat <- matrix(0,
-                      nrow = length(unique(event_list[ , start_at])),
+                      nrow = length(unique(event_list[ , from])),
                       ncol = length(unique(event_list[ , story_chunk_col])))
 
-    for (c in unique(event_list[ , start_at])) {
+    for (c in unique(event_list[ , from])) {
       for (scene in unique(event_list[ , story_chunk_col])) {
-        heatmat[which(unique(event_list[ , start_at]) %in% c),
+        heatmat[which(unique(event_list[ , from]) %in% c),
                 which(unique(event_list[ , story_chunk_col]) == scene)] <- length(
                   which(event_list[ , story_chunk_col] == scene &
-                          event_list[ , start_at] == c))
+                          event_list[ , from] == c))
       }
     }
   }
 
   if(is.null(char_names)) {
-    rownames(heatmat) <- unique(event_list[ , start_at])
+    rownames(heatmat) <- unique(event_list[ , from])
   } else {
-    if(is.numeric(unique(event_list[ , start_at]))) {
-      rownames(heatmat) <- char_names[unique(event_list[ , start_at])]
+    if(is.numeric(unique(event_list[ , from]))) {
+      rownames(heatmat) <- char_names[unique(event_list[ , from])]
     } else {
-      rownames(heatmat) <- unique(event_list[ , start_at])
+      rownames(heatmat) <- unique(event_list[ , from])
       message("A vector of character names was passed to `char_names` but the
-            values in the `start_at` column of `event_list` do not correspond
+            values in the `from` column of `event_list` do not correspond
             to numeric character IDs. As such, the `char_names` vector has been
             ignored and row names have been assigned based on how the characters
-            appear in the `start_at` column of `event_list`.")
+            appear in the `from` column of `event_list`.")
       }
     }
   colnames(heatmat) <- paste("chunk", seq.int(1:ncol(heatmat)), sep = "")
@@ -142,7 +142,7 @@ story_heatmap <- function(event_list,
 #' my_heatmap <- story_heatmap(event_list = tfa$event_list,
 #'                             char_names = tfa$node_list$char_name,
 #'                             story_chunk_col = 2,
-#'                             start_at = 3)
+#'                             from = 3)
 #' my_tidy_heatmap <- hm_tidy(my_heatmap)
 #'
 #' @export
@@ -166,6 +166,8 @@ hm_tidy <- function(input_heatmap) {
 #' @param input_heatmap The tidy-formatted heatmap data, as produced by passing
 #'   the matrix returned by the \code{story_heatmap} function through the
 #'   \code{hm_tidy} function.
+#' @param cutoff A numeric value to be used to filter the visualisation to only
+#'   include those characters who speak more than \code{cutoff} number of lines.
 #'
 #' @return A ggplot2 plot.
 #'
@@ -179,22 +181,31 @@ hm_tidy <- function(input_heatmap) {
 #'
 #' @importFrom ggplot2 ggplot aes element_blank
 #' @export
-plot_heatmap <- function(input_heatmap) {
-  ggplot(data = input_heatmap) +
-    ggplot2::geom_tile(aes(x = .data$Chunk,
-                           y = stats::reorder(.data$Character,
-                                       dplyr::desc(.data$Character)),
-                           fill = .data$Activity),
-                       colour = "#FFFFFF") +
+plot_heatmap <- function(input_heatmap, cutoff = 0) {
+  if(!requireNamespace("ggplot2", quietly = TRUE)) {
+    stop("The package 'ggplot2' is needed for this function.")
+  }
+
+  n_chunks <- length(unique(input_heatmap$Chunk))
+
+  input_heatmap %>%
+    dplyr::group_by(Character) %>%
+    dplyr::mutate(nlines = sum(Activity)) %>%
+    dplyr::filter(nlines > cutoff) %>%
+    ggplot(aes(x = .data$Chunk,
+               y = stats::reorder(.data$Character,
+                                  dplyr::desc(.data$Character)))) +
+    ggplot2::geom_tile(aes(fill = .data$Activity), colour = "#FFFFFF") +
     ggplot2::scale_fill_gradient(low = "#f7f7fc", high = "#726d9c") +
-    ggplot2::scale_x_continuous(name = "Story chunk", expand = c(0.005, 0)) +
+    ggplot2::scale_x_continuous(name = "Story chunk", expand = c(0.005, 0),
+                                n.breaks = n_chunks) +
     ggplot2::scale_y_discrete(name = "Character",
                               limits = rev(levels(.data$Character))) +
     ggplot2::theme_light() +
     ggplot2::theme(legend.position = "none",
                    axis.ticks = element_blank(),
                    panel.border = element_blank(),
-                   #panel.grid.major.y = element_blank(),
-                   panel.grid.minor.x = element_blank(),
+                   panel.grid.major.y = element_blank(),
+                   # panel.grid.minor.x = element_blank(),
                    panel.grid.major.x = element_blank())
 }
