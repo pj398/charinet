@@ -65,6 +65,13 @@ narrative_centrality <- function(event_list,
                                  wp = 0.01,
                                  normalised = TRUE,
                                  from = 1) {
+  # Drop empty rows because they aren't network events if there's no receiver
+  no_recs <- which(rowSums(event_list[ , (from + 1):ncol(event_list)]) == 0)
+  if(length(no_recs) > 0) {
+    event_list <- event_list[-no_recs, ]
+    message(paste0("Dropped ", length(no_recs), " rows with no recipients." ))
+  }
+
   C_in <- matrix(1, (ncol(event_list) - from), nrow(event_list))
   C_out <- matrix(1, (ncol(event_list) - from), nrow(event_list))
   C_in_norm <- matrix(1, (ncol(event_list) - from), nrow(event_list))
