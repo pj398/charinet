@@ -85,3 +85,51 @@ adj_from_events <- function(event_list,
 
   return(adj)
 }
+
+#' Extract a nodelist from an event list
+#'
+#' @description A helper function for extracting a simple list of nodes based on
+#'   the interactions in an event list. Extracts the character ID numbers,
+#'   character names, and the number of lines spoken by each character.
+#'
+#'   The event list should be structured consistently with the format specified
+#'   elsewhere in this package documentation (at least a sender ID column
+#'   followed by columns containing binary dummy variables for each character).
+#'
+#' @param event_list The event list, containing at least a sender ID column and
+#'   columns containing binary dummy variables for each character.
+#' @param from The column containing the sender IDs, followed by dummy variables
+#'   for each character.
+#' @param receivers If TRUE, a column \code{linesin} will be added to the nodelist
+#'   containing the number of times the node was the recipient of a line of
+#'   dialogue. Only makes sense when dummy variables for recipients correspond
+#'   to direct interaction data (but not when the dummies correspond to
+#'   co-occurence or proximity, as with automatic extraction methods).
+#'
+#' @return A data frame with rows corrsponding to characters and columns
+#'   containing node-level variables.
+#'
+#' @examples
+#' tfa_events <- movienetdata::starwars_01$event_list
+#' tfa_nodes <- nodes_from_events(event_list = tfa_events,
+#'                                from = 3,
+#'                                receivers = TRUE)
+#'
+#' @export
+nodes_from_events <- function(event_list,
+                              from = 3,
+                              receivers = FALSE) {
+  n_chars <- length(unique(event_list[ , from]))
+  nodes <- data.frame(
+    charID = seq.int(1:n_chars),
+    char_name = colnames(event_list)[(from + 1):ncol(event_list)]
+  )
+  nodes$nlines <- vector("numeric", n_chars)
+  for (i in 1:n_chars) {
+    nodes$nlines[i] <- length(which(event_list[ , (from)] == i))
+  }
+  if(receivers == TRUE) {
+    nodes$linesin <- colSums(event_list[ , (from + 1):ncol(event_list)])
+  }
+  return(nodes)
+}
