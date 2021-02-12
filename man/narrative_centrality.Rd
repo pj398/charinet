@@ -10,7 +10,7 @@ narrative_centrality(
   mode = "both",
   wp = 0.01,
   normalised = TRUE,
-  start_at = 1
+  from = 1
 )
 }
 \arguments{
@@ -44,7 +44,7 @@ score at time t is divided by the sum of all characters' scores, such that
 the sum of all character scores at time t is always equal to 1. When
 \code{normalised = FALSE}, absolute scores are returned.}
 
-\item{start_at}{The position of the column in the input data (as structured
+\item{from}{The position of the column in the input data (as structured
 in the way described above) containing the sender IDs. This ensures the
 function always works the same way, even when the input event list contains
 different numbers of additional event-level variables (e.g. weight or
@@ -76,7 +76,7 @@ tfa <- movienetdata::starwars_01
 tfa_scores <- narrative_centrality(tfa$event_list,
                                    char_names = tfa[[2]]$char_name,
                                    wp = 0.01,
-                                   start_at = 3)
+                                   from = 3)
 
 # What is the (normalised) speaking score of character 5 at time t=50?
 tfa_scores$out_scores[5, 50]

@@ -29,7 +29,7 @@
 #'   score at time t is divided by the sum of all characters' scores, such that
 #'   the sum of all character scores at time t is always equal to 1. When
 #'   \code{normalised = FALSE}, absolute scores are returned.
-#' @param start_at The position of the column in the input data (as structured
+#' @param from The position of the column in the input data (as structured
 #'   in the way described above) containing the sender IDs. This ensures the
 #'   function always works the same way, even when the input event list contains
 #'   different numbers of additional event-level variables (e.g. weight or
@@ -48,7 +48,7 @@
 #' tfa_scores <- narrative_centrality(tfa$event_list,
 #'                                    char_names = tfa[[2]]$char_name,
 #'                                    wp = 0.01,
-#'                                    start_at = 3)
+#'                                    from = 3)
 #'
 #' # What is the (normalised) speaking score of character 5 at time t=50?
 #' tfa_scores$out_scores[5, 50]
@@ -64,13 +64,13 @@ narrative_centrality <- function(event_list,
                                  mode = "both",
                                  wp = 0.01,
                                  normalised = TRUE,
-                                 start_at = 1) {
-  C_in <- matrix(1, (ncol(event_list) - start_at), nrow(event_list))
-  C_out <- matrix(1, (ncol(event_list) - start_at), nrow(event_list))
-  C_in_norm <- matrix(1, (ncol(event_list) - start_at), nrow(event_list))
-  C_out_norm <- matrix(1, (ncol(event_list) - start_at), nrow(event_list))
+                                 from = 1) {
+  C_in <- matrix(1, (ncol(event_list) - from), nrow(event_list))
+  C_out <- matrix(1, (ncol(event_list) - from), nrow(event_list))
+  C_in_norm <- matrix(1, (ncol(event_list) - from), nrow(event_list))
+  C_out_norm <- matrix(1, (ncol(event_list) - from), nrow(event_list))
   if(is.null(char_names)) {
-    char_names <- colnames(event_list)[(start_at + 1):ncol(event_list)]
+    char_names <- colnames(event_list)[(from + 1):ncol(event_list)]
   }
   rownames(C_in) <- char_names
   colnames(C_in) <- paste("event", seq.int(1:nrow(event_list)), sep = "")
@@ -84,8 +84,8 @@ narrative_centrality <- function(event_list,
   C_in_t <- matrix(1, length(char_names), 1)
   C_out_t <- matrix(1, length(char_names), 1)
   for (t in 1:nrow(event_list)) {
-    speaker <- event_list[t, start_at]
-    receivers <- which(event_list[t, (start_at + 1):dim(event_list)[2]] == 1)
+    speaker <- event_list[t, from]
+    receivers <- which(event_list[t, (from + 1):dim(event_list)[2]] == 1)
     C_in_t[receivers] <- C_in_t[receivers] + (wp * C_in_t[speaker])
     C_out_t[speaker] <- C_out_t[speaker] +
       ((wp / length(receivers)) * sum(C_out_t[receivers]))
@@ -136,7 +136,7 @@ narrative_centrality <- function(event_list,
 #' tfa_scores <- narrative_centrality(tfa$event_list,
 #'                                    char_names = tfa[[2]]$char_name,
 #'                                    wp = 0.01,
-#'                                    start_at = 3)
+#'                                    from = 3)
 #' my_tidy_scores <- nc_tidy(tfa_scores$out_scores)
 #'
 #' @export

@@ -15,7 +15,7 @@
 #'   columns containing binary dummy variables for each character.
 #' @param nodes_file The node list, containing as many rows as there are unique
 #'   characters in the events list.
-#' @param start_at The column containing the sender IDs, followed by dummy
+#' @param from The column containing the sender IDs, followed by dummy
 #'   variables for each character.
 #' @param check_errors If TRUE, the function checks for common data input
 #'   errors. It looks for characters with self-ties, empty rows where no
@@ -28,7 +28,7 @@
 #' @export
 qread_film <- function(events_file,
                        nodes_file,
-                       start_at = 3,
+                       from = 3,
                        check_errors = TRUE) {
   # First, let's read in the event list and the node list
   lines <- read.csv(events_file, sep = ',', stringsAsFactors = FALSE)
@@ -36,9 +36,9 @@ qread_film <- function(events_file,
   chars <- read.csv(nodes_file, sep = ',', stringsAsFactors = FALSE)
   chars$nlines <- vector("numeric", nrow(chars))
   for (i in 1:nrow(chars)) {
-    chars$nlines[i] <- length(which(lines[ , (start_at)] == i))
+    chars$nlines[i] <- length(which(lines[ , (from)] == i))
   }
-  chars$linesin <- colSums(lines[ , (start_at + 1):ncol(lines)])
+  chars$linesin <- colSums(lines[ , (from + 1):ncol(lines)])
   # This hacky fix makes sure the code runs in the case of non-numeric input:
   if((FALSE %in% (apply(lines, 2, class) %in% "integer")) == FALSE) {
     lines <- as.matrix(lines)
@@ -48,16 +48,16 @@ qread_film <- function(events_file,
   adj <- matrix(0, nrow(chars), nrow(chars))
   for (i in 1:nrow(chars)) {
     for (j in 1:nrow(chars)) {
-      adj[i,j] <- length(which(lines[ , start_at] == i &
-                                 lines[ , j + (start_at)] == 1))
+      adj[i,j] <- length(which(lines[ , from] == i &
+                                 lines[ , j + (from)] == 1))
     }
   }
   if(length(chars$char_name) > 0) {
     colnames(adj) <- chars$char_name
     rownames(adj) <- chars$char_name
   } else {
-    colnames(adj) <- rownames(lines)[start_at + 1:ncol(lines)]
-    rownames(adj) <- rownames(lines)[start_at + 1:ncol(lines)]
+    colnames(adj) <- rownames(lines)[from + 1:ncol(lines)]
+    rownames(adj) <- rownames(lines)[from + 1:ncol(lines)]
   }
 
   if(check_errors == TRUE) {
@@ -77,19 +77,19 @@ qread_film <- function(events_file,
     }
     cat("\n")
     # Check for empty rows (no recipients indicated)
-    if(length(which(rowSums(lines[ , (start_at + 1):ncol(lines)]) == 0)) > 0)
+    if(length(which(rowSums(lines[ , (from + 1):ncol(lines)]) == 0)) > 0)
     {
       cat("Empty rows: ",
-          which(rowSums(lines[ , (start_at + 1):ncol(lines)]) == 0))
+          which(rowSums(lines[ , (from + 1):ncol(lines)]) == 0))
     } else {
       cat("No empty rows found.")
     }
     cat("\n")
     # Check for other data entry errors (cell values not in c(0, 1))
-    if(FALSE %in% unique(c(as.matrix(lines)[ , (start_at + 1):ncol(lines)]))
+    if(FALSE %in% unique(c(as.matrix(lines)[ , (from + 1):ncol(lines)]))
        %in% c("0", "1")) {
       cat("Data entry values: ",
-          unique(c(as.matrix(lines)[ , (start_at + 1):ncol(lines)])), "\n")
+          unique(c(as.matrix(lines)[ , (from + 1):ncol(lines)])), "\n")
     }
   }
 
