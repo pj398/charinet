@@ -13,7 +13,7 @@
 #' @param node_labels An optional character vector containing node names used to
 #'   label rows and columns in the adjacency matrix. If not provided, names are
 #'   inferred from the recipient dummy column names of the event list.
-#' @param start_at The column containing the sender IDs, followed by dummy
+#' @param from The column containing the sender IDs, followed by dummy
 #'   variables for each character.
 #' @param check_errors If TRUE, the function checks the event list for common
 #'   data input errors. It looks for characters with self-ties, empty rows where
@@ -32,23 +32,23 @@
 #' @export
 adj_from_events <- function(event_list,
                             node_labels = NULL,
-                            start_at = 3,
+                            from = 3,
                             check_errors = FALSE) {
   # Create adjacency matrix from the event list
-  nchars <- length(unique(event_list[ , start_at]))
+  nchars <- length(unique(event_list[ , from]))
   adj <- matrix(0, nchars, nchars)
   for (i in 1:nchars) {
     for (j in 1:nchars) {
-      adj[i, j] <- length(which(event_list[ , start_at] == i &
-                                 event_list[ , j + (start_at)] == 1))
+      adj[i, j] <- length(which(event_list[ , from] == i &
+                                 event_list[ , j + (from)] == 1))
     }
   }
   if(length(node_labels) > 0) {
     colnames(adj) <- node_labels
     rownames(adj) <- node_labels
   } else {
-    colnames(adj) <- rownames(event_list)[start_at + 1:ncol(event_list)]
-    rownames(adj) <- rownames(event_list)[start_at + 1:ncol(event_list)]
+    colnames(adj) <- rownames(event_list)[from + 1:ncol(event_list)]
+    rownames(adj) <- rownames(event_list)[from + 1:ncol(event_list)]
   }
 
   if(check_errors == TRUE) {
@@ -68,18 +68,19 @@ adj_from_events <- function(event_list,
     }
     cat("\n")
     # Check for empty rows (no recipients indicated)
-    if(length(which(rowSums(event_list[ , (start_at + 1):ncol(event_list)]) == 0)) > 0)
+    if(length(which(rowSums(event_list[ , (from + 1):ncol(event_list)]) == 0)) > 0)
     {
       cat("Empty rows: ",
-          which(rowSums(event_list[ , (start_at + 1):ncol(event_list)]) == 0))
+          which(rowSums(event_list[ , (from + 1):ncol(event_list)]) == 0))
     } else {
       cat("No empty rows found.")
     }
+    cat("\n")
     # Check for other data entry errors (cell values not in c(0, 1))
-    if(FALSE %in% unique(c(as.matrix(event_list)[ , (start_at + 1):ncol(event_list)]))
+    if(FALSE %in% unique(c(as.matrix(event_list)[ , (from + 1):ncol(event_list)]))
        %in% c("0", "1")) {
-      cat("\nData entry values: ",
-          unique(c(as.matrix(event_list)[ , (start_at + 1):ncol(event_list)])))
+      cat("Data entry values: ",
+          unique(c(as.matrix(event_list)[ , (from + 1):ncol(event_list)])), "\n")
     }
   }
 
@@ -133,3 +134,14 @@ nodes_from_events <- function(event_list,
   }
   return(nodes)
 }
+
+# Internal helper function for checking whether the packages listed in suggests
+# are installed (and thus whether the plotting functions, which use tidyverse
+# packages, can be run by the user). Takes a character vector of package names
+# to search for.
+check_suggests <- function(suggest) {
+  for (sug in suggest) {
+    if(!requireNamespace(sug, quietly = TRUE)) {
+      stop(paste0("Please install the package '", sug, "' to use this function."))
+    }
+  }
