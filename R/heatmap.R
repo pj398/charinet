@@ -152,26 +152,28 @@ story_heatmap <- function(event_list,
 #'
 #' @export
 plot_heatmap <- function(input_heatmap, cutoff = 0) {
-  charinet::check_sugs(c("dplyr", "ggplot2", "magrittr", "tibble", "tidyr"))
+  check_sugs(c("dplyr", "ggplot2", "readr", "tibble", "tidyr"))
 
   tidied_hm <- tibble::as_tibble(input_heatmap, rownames = "Character") %>%
-    tidyr::pivot_longer(cols = !Character,
+    tidyr::pivot_longer(cols = !.data$Character,
                         names_to = "Chunk",
                         names_prefix = "chunk",
                         values_to = "Activity") %>%
     dplyr::mutate(Chunk = readr::parse_integer(.data$Chunk)) %>%
-    dplyr::relocate(Chunk, .before = dplyr::everything()) %>%
-    dplyr::arrange(Chunk)
+    dplyr::relocate(.data$Chunk, .before = dplyr::everything()) %>%
+    dplyr::arrange(.data$Chunk)
 
   n_chunks <- length(unique(tidied_hm$Chunk))
 
   tidied_hm %>%
-    dplyr::group_by(Character) %>%
-    dplyr::mutate(nlines = sum(Activity)) %>%
-    dplyr::filter(nlines > cutoff) %>%
+    dplyr::group_by(.data$Character) %>%
+    dplyr::mutate(nlines = sum(.data$Activity)) %>%
+    dplyr::filter(.data$nlines > cutoff) %>%
     ggplot2::ggplot(ggplot2::aes(x = .data$Chunk,
-               y = stats::reorder(.data$Character,
-                                  dplyr::desc(.data$Character)))) +
+                                 y = stats::reorder(
+                                   .data$Character,
+                                   dplyr::desc(.data$Character)
+                                   ))) +
     ggplot2::geom_tile(ggplot2::aes(fill = .data$Activity), colour = "#FFFFFF") +
     ggplot2::scale_fill_gradient(low = "#f7f7fc", high = "#726d9c") +
     ggplot2::scale_x_continuous(name = "Story chunk", expand = c(0.005, 0),
