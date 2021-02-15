@@ -120,7 +120,7 @@ screenplay_to_events <- function(pdf_file, window = 5) {
                     lines$text, ignore.case = TRUE) & lines$tag == "D"] <- "d"
 
     # No leading whitespace and ending in number should be "P" (page info)
-    for (i in grep("(^[[:space:]]*.*[0-9]+[[:punct:]]?$)|©",
+    for (i in grep("(^[[:space:]]*.*[0-9]+[[:punct:]]?$)|\u00a9",
                    lines$text, ignore.case = FALSE)) {
       if (lines$tag[i] == "") {
         lines$tag[i] <- "P"
