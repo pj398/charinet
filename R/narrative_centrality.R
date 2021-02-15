@@ -127,7 +127,7 @@ narrative_centrality <- function(event_list,
   }
 }
 
-#' Convert narrative centrality scores to tidy format
+#' Plot narrative centrality scores using ggplot2
 #'
 #' @description A simple helper function which converts the N-by-T matrix of
 #'   narrative centrality scores into a tidy data format which plays nicely with
@@ -135,8 +135,13 @@ narrative_centrality <- function(event_list,
 #'
 #' @param input_scores The N-by-T matrix exported from the
 #'   \code{narrative_centrality} function.
+#' @param label_all Logical. If TRUE, each character in the line graph will be
+#'   labelled. If FALSE, only those characters whose normalised scores at the
+#'   end of the narrative are higher than their normalised scores at the start
+#'   are labelled (if input scores are not normalised, this won't have any
+#'   effect).
 #'
-#' @return A tibble.
+#' @return A ggplot2 plot.
 #'
 #' @examples
 #' tfa <- movienetdata::starwars_01
@@ -144,17 +149,49 @@ narrative_centrality <- function(event_list,
 #'                                    char_names = tfa[[2]]$char_name,
 #'                                    wp = 0.01,
 #'                                    from = 3)
-#' my_tidy_scores <- nc_tidy(tfa_scores$out_scores)
+#' plot_nc(tfa_scores$out_scores)
 #'
 #' @export
-nc_tidy <- function(input_scores) {
+plot_nc <- function(input_scores, label_all = FALSE) {
+  check_sugs(c("directlabels", "dplyr", "ggplot2", "readr", "tibble", "tidyr"))
+
   tidy_scores <- tibble::as_tibble(input_scores, rownames = "Character") %>%
-    tidyr::pivot_longer(cols = !Character,
+    tidyr::pivot_longer(cols = !.data$Character,
                         names_to = "Event",
                         names_prefix = "event",
                         values_to = "Score") %>%
     dplyr::mutate(Event = readr::parse_integer(.data$Event)) %>%
-    dplyr::relocate(Event, .before = dplyr::everything()) %>%
-    dplyr::arrange(Event)
-  return(tidy_scores)
+    dplyr::relocate(.data$Event, .before = dplyr::everything()) %>%
+    dplyr::arrange(.data$Event) %>%
+    dplyr::mutate(
+      Label = ifelse(
+        .data$Character %in% unique(.data$Character)[
+          .data$Score[which(.data$Event == 1)] <
+            .data$Score[which(.data$Event == max(.data$Event))]
+        ],
+        .data$Character,
+        NA)
+    )
+
+  if(label_all == TRUE) {
+    my_labels <- tidy_scores$Character
+  } else {
+    my_labels <- tidy_scores$Label
+  }
+
+  p <- tidy_scores %>%
+    ggplot2::ggplot(ggplot2::aes(x = .data$Event, y = .data$Score,
+                                 group = .data$Character, colour = my_labels)) +
+    ggplot2::geom_line(size = 1, show.legend = FALSE) +
+    ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0, 0.13))) +
+    directlabels::geom_dl(ggplot2::aes(label = my_labels),
+                          method = list("last.bumpup", fontface = "bold")) +
+    ggplot2::theme_light() +
+    ggplot2::theme(axis.line = ggplot2::element_line(colour = "black"),
+                   panel.grid.major = ggplot2::element_blank(),
+                   panel.grid.minor = ggplot2::element_blank(),
+                   panel.border = ggplot2::element_blank(),
+                   panel.background = ggplot2::element_blank())
+
+  suppressWarnings(plot(p))
 }
