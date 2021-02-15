@@ -27,8 +27,8 @@
 #'   sender ID column contains the numeric IDs of characters rather than the
 #'   character names. If specified, this vector must be of equal length to the
 #'   number of unique characters in the event list, and must be ordered by
-#'   character ID number. If not supplied, names will be assigned based on the
-#'   unique values of the sender ID column.
+#'   character ID number. If not supplied, names will be assigned based on how
+#'   character names appear in the event list.
 #' @param n_chunks If a numeric value is passed to this argument, the event list
 #'   will be "chunked" into that many equally-sized segments. This will override
 #'   the \code{story_chunk_col} argument which is for specifying user-defined
@@ -36,9 +36,9 @@
 #' @param story_chunk_col The position of the column in the input
 #'   \code{event_list} which indexes the events by story chunk. This argument
 #'   will be ignored unless \code{n_chunks = NULL}.
-#' @param from The position of the column in the input \code{event_list}
-#'   which indexes the event by the sender ID (e.g. for dialogue data, this will
-#'   be the speaker ID column).
+#' @param from The position of the column in the input \code{event_list} which
+#'   indexes the event by the sender ID (e.g. for dialogue data, this will be
+#'   the speaker ID column).
 #'
 #' @return A matrix is returned, with each row corresponding to a character and
 #'   each column corresponding to a story chunk. The value of cell [i, j] is the
@@ -108,7 +108,12 @@ story_heatmap <- function(event_list,
   }
 
   if(is.null(char_names)) {
-    rownames(heatmat) <- unique(event_list[ , from])
+    if(is.numeric(unique(event_list[ , from]))) {
+      char_names <- colnames(event_list)[(from + 1):ncol(event_list)]
+      rownames(heatmat) <- char_names[unique(event_list[ , from])]
+    } else {
+      rownames(heatmat) <- unique(event_list[ , from])
+    }
   } else {
     if(is.numeric(unique(event_list[ , from]))) {
       rownames(heatmat) <- char_names[unique(event_list[ , from])]
@@ -126,46 +131,13 @@ story_heatmap <- function(event_list,
   return(heatmat)
 }
 
-#' Convert heatmap matrix to tidy format
-#'
-#' @description A simple helper function which converts the character-by-chunk
-#'   heatmap matrix into a tidy data format which plays nicely with ggplot2 and
-#'   other tidyverse packages.
-#'
-#' @param input_heatmap The character-by-chunk heatmap matrix produced by the
-#'   \code{story_heatmap} function.
-#'
-#' @return A tibble.
-#'
-#' @examples
-#' tfa <- movienetdata::starwars_01
-#' my_heatmap <- story_heatmap(event_list = tfa$event_list,
-#'                             char_names = tfa$node_list$char_name,
-#'                             story_chunk_col = 2,
-#'                             from = 3)
-#' my_tidy_heatmap <- hm_tidy(my_heatmap)
-#'
-#' @export
-hm_tidy <- function(input_heatmap) {
-  tidy_heatmap <- tibble::as_tibble(input_heatmap, rownames = "Character") %>%
-    tidyr::pivot_longer(cols = !Character,
-                        names_to = "Chunk",
-                        names_prefix = "chunk",
-                        values_to = "Activity") %>%
-    dplyr::mutate(Chunk = readr::parse_integer(.data$Chunk)) %>%
-    dplyr::relocate(Chunk, .before = dplyr::everything()) %>%
-    dplyr::arrange(Chunk)
-  return(tidy_heatmap)
-}
-
 #' Plot heatmap using ggplot2
 #'
 #' @description Create a quick heatmap visualisation of character activity by
 #'   story chunks using ggplot2.
 #'
-#' @param input_heatmap The tidy-formatted heatmap data, as produced by passing
-#'   the matrix returned by the \code{story_heatmap} function through the
-#'   \code{hm_tidy} function.
+#' @param input_heatmap The character-by-chunk heatmap matrix produced by the
+#'   \code{story_heatmap} function.
 #' @param cutoff A numeric value to be used to filter the visualisation to only
 #'   include those characters who speak more than \code{cutoff} number of lines.
 #'
@@ -176,18 +148,24 @@ hm_tidy <- function(input_heatmap) {
 #' story_heatmap(tfa$event_list,
 #'               char_names = tfa$node_list$char_name,
 #'               n_chunks = 4) %>%
-#'   hm_tidy() %>%
-#'   plot_heatmap()
+#'   plot_heatmap(cutoff = 3)
 #'
 #' @export
 plot_heatmap <- function(input_heatmap, cutoff = 0) {
-  if(!requireNamespace("ggplot2", quietly = TRUE)) {
-    stop("The package 'ggplot2' is needed for this function.")
-  }
+  charinet::check_sugs(c("dplyr", "ggplot2", "magrittr", "tibble", "tidyr"))
 
-  n_chunks <- length(unique(input_heatmap$Chunk))
+  tidied_hm <- tibble::as_tibble(input_heatmap, rownames = "Character") %>%
+    tidyr::pivot_longer(cols = !Character,
+                        names_to = "Chunk",
+                        names_prefix = "chunk",
+                        values_to = "Activity") %>%
+    dplyr::mutate(Chunk = readr::parse_integer(.data$Chunk)) %>%
+    dplyr::relocate(Chunk, .before = dplyr::everything()) %>%
+    dplyr::arrange(Chunk)
 
-  input_heatmap %>%
+  n_chunks <- length(unique(tidied_hm$Chunk))
+
+  tidied_hm %>%
     dplyr::group_by(Character) %>%
     dplyr::mutate(nlines = sum(Activity)) %>%
     dplyr::filter(nlines > cutoff) %>%
@@ -203,6 +181,9 @@ plot_heatmap <- function(input_heatmap, cutoff = 0) {
     ggplot2::theme_light() +
     ggplot2::theme(legend.position = "none",
                    axis.ticks = ggplot2::element_blank(),
+                   axis.text.x = ggplot2::element_text(
+                     angle = ifelse(n_chunks > 25, 90, 0)
+                     ),
                    panel.border = ggplot2::element_blank(),
                    panel.grid.major.y = ggplot2::element_blank(),
                    panel.grid.major.x = ggplot2::element_blank())

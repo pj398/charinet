@@ -27,8 +27,8 @@ the rows of the matrix returned by the function. This is useful when the
 sender ID column contains the numeric IDs of characters rather than the
 character names. If specified, this vector must be of equal length to the
 number of unique characters in the event list, and must be ordered by
-character ID number. If not supplied, names will be assigned based on the
-unique values of the sender ID column.}
+character ID number. If not supplied, names will be assigned based on how
+character names appear in the event list.}
 
 \item{n_chunks}{If a numeric value is passed to this argument, the event list
 will be "chunked" into that many equally-sized segments. This will override
@@ -39,9 +39,9 @@ story chunk variables.}
 \code{event_list} which indexes the events by story chunk. This argument
 will be ignored unless \code{n_chunks = NULL}.}
 
-\item{from}{The position of the column in the input \code{event_list}
-which indexes the event by the sender ID (e.g. for dialogue data, this will
-be the speaker ID column).}
+\item{from}{The position of the column in the input \code{event_list} which
+indexes the event by the sender ID (e.g. for dialogue data, this will be
+the speaker ID column).}
 }
 \value{
 A matrix is returned, with each row corresponding to a character and

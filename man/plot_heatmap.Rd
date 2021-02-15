@@ -7,9 +7,8 @@
 plot_heatmap(input_heatmap, cutoff = 0)
 }
 \arguments{
-\item{input_heatmap}{The tidy-formatted heatmap data, as produced by passing
-the matrix returned by the \code{story_heatmap} function through the
-\code{hm_tidy} function.}
+\item{input_heatmap}{The character-by-chunk heatmap matrix produced by the
+\code{story_heatmap} function.}
 
 \item{cutoff}{A numeric value to be used to filter the visualisation to only
 include those characters who speak more than \code{cutoff} number of lines.}
@@ -26,7 +25,6 @@ tfa <- movienetdata::starwars_01
 story_heatmap(tfa$event_list,
               char_names = tfa$node_list$char_name,
               n_chunks = 4) \%>\%
-  hm_tidy() \%>\%
-  plot_heatmap()
+  plot_heatmap(cutoff = 3)
 
 }
