@@ -139,9 +139,10 @@ nodes_from_events <- function(event_list,
 # are installed (and thus whether the plotting functions, which use tidyverse
 # packages, can be run by the user). Takes a character vector of package names
 # to search for.
-check_suggests <- function(suggest) {
+check_sugs <- function(suggest) {
   for (sug in suggest) {
     if(!requireNamespace(sug, quietly = TRUE)) {
       stop(paste0("Please install the package '", sug, "' to use this function."))
     }
   }
+}
