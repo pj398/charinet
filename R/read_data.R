@@ -56,8 +56,8 @@ qread_film <- function(events_file,
     colnames(adj) <- chars$char_name
     rownames(adj) <- chars$char_name
   } else {
-    colnames(adj) <- rownames(lines)[from + 1:ncol(lines)]
-    rownames(adj) <- rownames(lines)[from + 1:ncol(lines)]
+    colnames(adj) <- rownames(lines)[(from + 1):ncol(lines)]
+    rownames(adj) <- rownames(lines)[(from + 1):ncol(lines)]
   }
 
   if(check_errors == TRUE) {

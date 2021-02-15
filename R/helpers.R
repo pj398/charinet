@@ -47,8 +47,8 @@ adj_from_events <- function(event_list,
     colnames(adj) <- node_labels
     rownames(adj) <- node_labels
   } else {
-    colnames(adj) <- rownames(event_list)[from + 1:ncol(event_list)]
-    rownames(adj) <- rownames(event_list)[from + 1:ncol(event_list)]
+    colnames(adj) <- rownames(event_list)[(from + 1):ncol(event_list)]
+    rownames(adj) <- rownames(event_list)[(from + 1):ncol(event_list)]
   }
 
   if(check_errors == TRUE) {

@@ -4,12 +4,7 @@
 \alias{adj_from_events}
 \title{Extract an adjacency matrix from an event list}
 \usage{
-adj_from_events(
-  event_list,
-  node_labels = NULL,
-  start_at = 3,
-  check_errors = FALSE
-)
+adj_from_events(event_list, node_labels = NULL, from = 3, check_errors = FALSE)
 }
 \arguments{
 \item{event_list}{The event list, containing at least a sender ID column and
@@ -19,7 +14,7 @@ columns containing binary dummy variables for each character.}
 label rows and columns in the adjacency matrix. If not provided, names are
 inferred from the recipient dummy column names of the event list.}
 
-\item{start_at}{The column containing the sender IDs, followed by dummy
+\item{from}{The column containing the sender IDs, followed by dummy
 variables for each character.}
 
 \item{check_errors}{If TRUE, the function checks the event list for common
