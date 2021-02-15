@@ -20,9 +20,8 @@ effect).}
 A ggplot2 plot.
 }
 \description{
-A simple helper function which converts the N-by-T matrix of
-  narrative centrality scores into a tidy data format which plays nicely with
-  ggplot2 and other tidyverse packages.
+Create a quick line graph showing character trajectories through
+  narrative time based on their narrative centrality scores.
 }
 \examples{
 tfa <- movienetdata::starwars_01

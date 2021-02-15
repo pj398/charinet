@@ -129,9 +129,8 @@ narrative_centrality <- function(event_list,
 
 #' Plot narrative centrality scores using ggplot2
 #'
-#' @description A simple helper function which converts the N-by-T matrix of
-#'   narrative centrality scores into a tidy data format which plays nicely with
-#'   ggplot2 and other tidyverse packages.
+#' @description Create a quick line graph showing character trajectories through
+#'   narrative time based on their narrative centrality scores.
 #'
 #' @param input_scores The N-by-T matrix exported from the
 #'   \code{narrative_centrality} function.
