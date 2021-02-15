@@ -10,9 +10,9 @@
 #'
 #' @param event_list The event list, containing at least a sender ID column and
 #'   columns containing binary dummy variables for each character.
-#' @param node_labels An optional character vector containing node names used to
+#' @param char_names An optional character vector containing node names used to
 #'   label rows and columns in the adjacency matrix. If not provided, names are
-#'   inferred from the recipient dummy column names of the event list.
+#'   inferred from the event list.
 #' @param from The column containing the sender IDs, followed by dummy
 #'   variables for each character.
 #' @param check_errors If TRUE, the function checks the event list for common
@@ -26,12 +26,12 @@
 #' @examples
 #' tfa <- movienetdata::starwars_01
 #' tfa_adj <- adj_from_events(event_list = tfa$event_list,
-#'                            node_labels = tfa$node_list$char_name,
+#'                            char_names = tfa$node_list$char_name,
 #'                            check_errors = TRUE)
 #'
 #' @export
 adj_from_events <- function(event_list,
-                            node_labels = NULL,
+                            char_names = NULL,
                             from = 3,
                             check_errors = FALSE) {
   # Create adjacency matrix from the event list
@@ -43,13 +43,12 @@ adj_from_events <- function(event_list,
                                  event_list[ , j + (from)] == 1))
     }
   }
-  if(length(node_labels) > 0) {
-    colnames(adj) <- node_labels
-    rownames(adj) <- node_labels
-  } else {
-    colnames(adj) <- rownames(event_list)[(from + 1):ncol(event_list)]
-    rownames(adj) <- rownames(event_list)[(from + 1):ncol(event_list)]
+
+  if(is.null(char_names)) {
+    char_names <- colnames(event_list)[(from + 1):ncol(event_list)]
   }
+  colnames(adj) <- char_names
+  rownames(adj) <- char_names
 
   if(check_errors == TRUE) {
     self_ties <- vector("numeric", length = nrow(adj))

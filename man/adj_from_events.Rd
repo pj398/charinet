@@ -4,15 +4,15 @@
 \alias{adj_from_events}
 \title{Extract an adjacency matrix from an event list}
 \usage{
-adj_from_events(event_list, node_labels = NULL, from = 3, check_errors = FALSE)
+adj_from_events(event_list, char_names = NULL, from = 3, check_errors = FALSE)
 }
 \arguments{
 \item{event_list}{The event list, containing at least a sender ID column and
 columns containing binary dummy variables for each character.}
 
-\item{node_labels}{An optional character vector containing node names used to
+\item{char_names}{An optional character vector containing node names used to
 label rows and columns in the adjacency matrix. If not provided, names are
-inferred from the recipient dummy column names of the event list.}
+inferred from the event list.}
 
 \item{from}{The column containing the sender IDs, followed by dummy
 variables for each character.}
@@ -38,7 +38,7 @@ A helper function for extracting an adjacency matrix based on
 \examples{
 tfa <- movienetdata::starwars_01
 tfa_adj <- adj_from_events(event_list = tfa$event_list,
-                           node_labels = tfa$node_list$char_name,
+                           char_names = tfa$node_list$char_name,
                            check_errors = TRUE)
 
 }
