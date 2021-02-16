@@ -4,19 +4,19 @@
 #'   standardised format wherein certain column orders and variable names are
 #'   used. For data not meeting this format, read the data in manually.
 #'
-#'   To work, the event list should be structured consistently with the format
-#'   specified elsewhere in this package documentation (at least a sender ID
-#'   column followed by columns containing binary dummy variables for each
-#'   character). The function will look for a column called "char_name" in the
-#'   nodelist to label the adjacency matrix. If it doesn't find one, it will
-#'   infer names from event list columns names.
+#'   More specifically, in order to work, the event list should be structured
+#'   consistently with the format specified elsewhere in this package
+#'   documentation (at least a sender ID column followed immediately by columns
+#'   containing binary dummy variables for each character).
 #'
 #' @param events_file The event list, containing at least a sender ID column and
 #'   columns containing binary dummy variables for each character.
 #' @param nodes_file The node list, containing as many rows as there are unique
-#'   characters in the events list.
-#' @param from The column containing the sender IDs, followed by dummy
-#'   variables for each character.
+#'   characters in the events list. If not supplied, it will be automatically
+#'   generated from the event list, with character names being inferred from how
+#'   they appear in the event list.
+#' @param from The column containing the sender IDs, followed by dummy variables
+#'   for each character.
 #' @param check_errors If TRUE, the function checks for common data input
 #'   errors. It looks for characters with self-ties, empty rows where no
 #'   recipient was inputted, and any values other than 1 and 0 in the recipient
@@ -27,16 +27,23 @@
 #'
 #' @export
 qread_film <- function(events_file,
-                       nodes_file,
+                       nodes_file = NULL,
                        from = 3,
                        check_errors = TRUE) {
-  # First, let's read in the event list and the node list
+
   lines <- read.csv(events_file, sep = ',', stringsAsFactors = FALSE)
-  # Now, let's read in the node list and add some attributes we'll want later
-  chars <- read.csv(nodes_file, sep = ',', stringsAsFactors = FALSE)
-  chars$nlines <- vector("numeric", nrow(chars))
-  for (i in 1:nrow(chars)) {
-    chars$nlines[i] <- length(which(lines[ , (from)] == i))
+
+  if(is.null(nodes_file)) {
+    chars <- nodes_from_events(event_list = lines, from = from)
+  } else {
+    chars <- read.csv(nodes_file, sep = ',', stringsAsFactors = FALSE)
+  }
+
+  if(is.numeric(unique(lines[, from]))) {
+    chars$nlines <- vector("numeric", nrow(chars))
+    for (i in 1:nrow(chars)) {
+      chars$nlines[i] <- length(which(lines[ , (from)] == i))
+    }
   }
   chars$linesin <- colSums(lines[ , (from + 1):ncol(lines)])
   # This hacky fix makes sure the code runs in the case of non-numeric input:
@@ -44,54 +51,19 @@ qread_film <- function(events_file,
     lines <- as.matrix(lines)
   }
 
-  # Create adjacency matrix from the event list
-  adj <- matrix(0, nrow(chars), nrow(chars))
-  for (i in 1:nrow(chars)) {
-    for (j in 1:nrow(chars)) {
-      adj[i,j] <- length(which(lines[ , from] == i &
-                                 lines[ , j + (from)] == 1))
-    }
-  }
-  if(length(chars$char_name) > 0) {
-    colnames(adj) <- chars$char_name
-    rownames(adj) <- chars$char_name
+  poss_labels <- c("char_name", "character.name", "char.name", "name", "label")
+  if(TRUE %in% (poss_labels %in% names(chars))) {
+    character_names <- chars[ , which(
+      names(chars) == poss_labels[min(which(poss_labels %in% names(chars)))]
+      )]
   } else {
-    colnames(adj) <- rownames(lines)[(from + 1):ncol(lines)]
-    rownames(adj) <- rownames(lines)[(from + 1):ncol(lines)]
+    character_names <- colnames(lines)[(from + 1):ncol(lines)]
   }
 
-  if(check_errors == TRUE) {
-    self_ties <- vector("numeric", length = nrow(adj))
-    # Check diagonal for self-ties
-    for (i in 1:nrow(adj)){
-      if(adj[i, i] > 0) {
-        self_ties[i] <- 1
-      } else {
-        self_ties[i] <- 0
-      }
-    }
-    if(length(which(self_ties > 0)) > 0) {
-      cat("Characters with self-ties: ", which(self_ties > 0))
-    } else {
-      cat("No characters with self-ties found.")
-    }
-    cat("\n")
-    # Check for empty rows (no recipients indicated)
-    if(length(which(rowSums(lines[ , (from + 1):ncol(lines)]) == 0)) > 0)
-    {
-      cat("Empty rows: ",
-          which(rowSums(lines[ , (from + 1):ncol(lines)]) == 0))
-    } else {
-      cat("No empty rows found.")
-    }
-    cat("\n")
-    # Check for other data entry errors (cell values not in c(0, 1))
-    if(FALSE %in% unique(c(as.matrix(lines)[ , (from + 1):ncol(lines)]))
-       %in% c("0", "1")) {
-      cat("Data entry values: ",
-          unique(c(as.matrix(lines)[ , (from + 1):ncol(lines)])), "\n")
-    }
-  }
+  adj <- adj_from_events(event_list = lines,
+                         char_names = character_names,
+                         check_errors = check_errors,
+                         from = from)
 
   return(list(event_list = lines, node_list = chars, adjacency = adj))
 }

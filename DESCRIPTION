@@ -1,7 +1,7 @@
 Package: charinet
 Type: Package
 Title: A Package for Character Interaction Network Analysis
-Version: 0.0.2.9003
+Version: 0.0.2.9004
 Authors@R: person("Pete", "Jones", email = "petejones398@gmail.com", 
     role=c("aut", "cre"))
 URL: https://github.com/pj398/charinet

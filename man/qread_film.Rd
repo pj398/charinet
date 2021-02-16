@@ -4,17 +4,19 @@
 \alias{qread_film}
 \title{Read in character interaction network data from standardised input format}
 \usage{
-qread_film(events_file, nodes_file, from = 3, check_errors = TRUE)
+qread_film(events_file, nodes_file = NULL, from = 3, check_errors = TRUE)
 }
 \arguments{
 \item{events_file}{The event list, containing at least a sender ID column and
 columns containing binary dummy variables for each character.}
 
 \item{nodes_file}{The node list, containing as many rows as there are unique
-characters in the events list.}
+characters in the events list. If not supplied, it will be automatically
+generated from the event list, with character names being inferred from how
+they appear in the event list.}
 
-\item{from}{The column containing the sender IDs, followed by dummy
-variables for each character.}
+\item{from}{The column containing the sender IDs, followed by dummy variables
+for each character.}
 
 \item{check_errors}{If TRUE, the function checks for common data input
 errors. It looks for characters with self-ties, empty rows where no
@@ -30,10 +32,8 @@ A helper function for quickly reading in data recorded in a
   standardised format wherein certain column orders and variable names are
   used. For data not meeting this format, read the data in manually.
 
-  To work, the event list should be structured consistently with the format
-  specified elsewhere in this package documentation (at least a sender ID
-  column followed by columns containing binary dummy variables for each
-  character). The function will look for a column called "char_name" in the
-  nodelist to label the adjacency matrix. If it doesn't find one, it will
-  infer names from event list columns names.
+  More specifically, in order to work, the event list should be structured
+  consistently with the format specified elsewhere in this package
+  documentation (at least a sender ID column followed immediately by columns
+  containing binary dummy variables for each character).
 }
