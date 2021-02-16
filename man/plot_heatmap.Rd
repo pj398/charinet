@@ -4,7 +4,7 @@
 \alias{plot_heatmap}
 \title{Plot heatmap using ggplot2}
 \usage{
-plot_heatmap(input_heatmap, cutoff = 0)
+plot_heatmap(input_heatmap, cutoff = 0, title = "")
 }
 \arguments{
 \item{input_heatmap}{The character-by-chunk heatmap matrix produced by the
@@ -12,6 +12,9 @@ plot_heatmap(input_heatmap, cutoff = 0)
 
 \item{cutoff}{A numeric value to be used to filter the visualisation to only
 include those characters who speak more than \code{cutoff} number of lines.}
+
+\item{title}{An optional character string which can be used to add a title to
+the visualisation.}
 }
 \value{
 A ggplot2 plot.

@@ -4,7 +4,7 @@
 \alias{plot_nc}
 \title{Plot narrative centrality scores using ggplot2}
 \usage{
-plot_nc(input_scores, label_all = FALSE)
+plot_nc(input_scores, label_all = FALSE, title = "")
 }
 \arguments{
 \item{input_scores}{The N-by-T matrix exported from the
@@ -15,6 +15,9 @@ labelled. If FALSE, only those characters whose normalised scores at the
 end of the narrative are higher than their normalised scores at the start
 are labelled (if input scores are not normalised, this won't have any
 effect).}
+
+\item{title}{An optional character string which can be used to add a title to
+the visualisation.}
 }
 \value{
 A ggplot2 plot.

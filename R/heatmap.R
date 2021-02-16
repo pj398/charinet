@@ -140,6 +140,8 @@ story_heatmap <- function(event_list,
 #'   \code{story_heatmap} function.
 #' @param cutoff A numeric value to be used to filter the visualisation to only
 #'   include those characters who speak more than \code{cutoff} number of lines.
+#' @param title An optional character string which can be used to add a title to
+#'   the visualisation.
 #'
 #' @return A ggplot2 plot.
 #'
@@ -151,7 +153,9 @@ story_heatmap <- function(event_list,
 #'   plot_heatmap(cutoff = 3)
 #'
 #' @export
-plot_heatmap <- function(input_heatmap, cutoff = 0) {
+plot_heatmap <- function(input_heatmap,
+                         cutoff = 0,
+                         title = "") {
   check_sugs(c("dplyr", "ggplot2", "readr", "tibble", "tidyr"))
 
   tidied_hm <- tibble::as_tibble(input_heatmap, rownames = "Character") %>%
@@ -180,6 +184,7 @@ plot_heatmap <- function(input_heatmap, cutoff = 0) {
                                 n.breaks = n_chunks) +
     ggplot2::scale_y_discrete(name = "Character",
                               limits = rev(levels(.data$Character))) +
+    ggplot2::labs(title = title) +
     ggplot2::theme_light() +
     ggplot2::theme(legend.position = "none",
                    axis.ticks = ggplot2::element_blank(),

@@ -139,6 +139,8 @@ narrative_centrality <- function(event_list,
 #'   end of the narrative are higher than their normalised scores at the start
 #'   are labelled (if input scores are not normalised, this won't have any
 #'   effect).
+#' @param title An optional character string which can be used to add a title to
+#'   the visualisation.
 #'
 #' @return A ggplot2 plot.
 #'
@@ -151,7 +153,9 @@ narrative_centrality <- function(event_list,
 #' plot_nc(tfa_scores$out_scores)
 #'
 #' @export
-plot_nc <- function(input_scores, label_all = FALSE) {
+plot_nc <- function(input_scores,
+                    label_all = FALSE,
+                    title = "") {
   check_sugs(c("directlabels", "dplyr", "ggplot2", "readr", "tibble", "tidyr"))
 
   tidy_scores <- tibble::as_tibble(input_scores, rownames = "Character") %>%
@@ -185,6 +189,7 @@ plot_nc <- function(input_scores, label_all = FALSE) {
     ggplot2::scale_x_continuous(expand = ggplot2::expansion(mult = c(0, 0.13))) +
     directlabels::geom_dl(ggplot2::aes(label = my_labels),
                           method = list("last.bumpup", fontface = "bold")) +
+    ggplot2::labs(title = title) +
     ggplot2::theme_light() +
     ggplot2::theme(axis.line = ggplot2::element_line(colour = "black"),
                    panel.grid.major = ggplot2::element_blank(),
