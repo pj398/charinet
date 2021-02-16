@@ -26,7 +26,7 @@
 #'   matrix derived from the event list.
 #'
 #' @export
-qread_film <- function(events_file,
+qread_charinet <- function(events_file,
                        nodes_file = NULL,
                        from = 3,
                        check_errors = TRUE) {
