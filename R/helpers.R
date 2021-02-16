@@ -34,8 +34,10 @@ adj_from_events <- function(event_list,
                             char_names = NULL,
                             from = 3,
                             check_errors = FALSE) {
-  # Create adjacency matrix from the event list
-  nchars <- length(unique(event_list[ , from]))
+  if(is.null(char_names)) {
+    char_names <- colnames(event_list)[(from + 1):ncol(event_list)]
+  }
+  nchars <- length(char_names)
   adj <- matrix(0, nchars, nchars)
   for (i in 1:nchars) {
     for (j in 1:nchars) {
@@ -44,9 +46,6 @@ adj_from_events <- function(event_list,
     }
   }
 
-  if(is.null(char_names)) {
-    char_names <- colnames(event_list)[(from + 1):ncol(event_list)]
-  }
   colnames(adj) <- char_names
   rownames(adj) <- char_names
 
