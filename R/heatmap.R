@@ -46,7 +46,7 @@
 #'
 #' @examples
 #' tfa <- movienetdata::starwars_01
-#' my_heatmap <- story_heatmap(event_list = tfa$event_list,
+#' my_heatmap <- activity_heatmap(event_list = tfa$event_list,
 #'                             char_names = tfa$node_list$char_name,
 #'                             story_chunk_col = 2,
 #'                             from = 3)
@@ -54,7 +54,7 @@
 #' my_heatmap[5, 6]
 #'
 #' @export
-story_heatmap <- function(event_list,
+activity_heatmap <- function(event_list,
                           char_names = NULL,
                           n_chunks = NULL,
                           story_chunk_col = NULL,
@@ -137,7 +137,7 @@ story_heatmap <- function(event_list,
 #'   story chunks using ggplot2.
 #'
 #' @param input_heatmap The character-by-chunk heatmap matrix produced by the
-#'   \code{story_heatmap} function.
+#'   \code{activity_heatmap} function.
 #' @param cutoff A numeric value to be used to filter the visualisation to only
 #'   include those characters who speak more than \code{cutoff} number of lines.
 #' @param title An optional character string which can be used to add a title to
@@ -147,7 +147,7 @@ story_heatmap <- function(event_list,
 #'
 #' @examples
 #' tfa <- movienetdata::starwars_01
-#' story_heatmap(tfa$event_list,
+#' activity_heatmap(tfa$event_list,
 #'               char_names = tfa$node_list$char_name,
 #'               n_chunks = 4) %>%
 #'   plot_heatmap(cutoff = 3)

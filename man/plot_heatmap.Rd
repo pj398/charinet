@@ -8,7 +8,7 @@ plot_heatmap(input_heatmap, cutoff = 0, title = "")
 }
 \arguments{
 \item{input_heatmap}{The character-by-chunk heatmap matrix produced by the
-\code{story_heatmap} function.}
+\code{activity_heatmap} function.}
 
 \item{cutoff}{A numeric value to be used to filter the visualisation to only
 include those characters who speak more than \code{cutoff} number of lines.}
@@ -25,7 +25,7 @@ Create a quick heatmap visualisation of character activity by
 }
 \examples{
 tfa <- movienetdata::starwars_01
-story_heatmap(tfa$event_list,
+activity_heatmap(tfa$event_list,
               char_names = tfa$node_list$char_name,
               n_chunks = 4) \%>\%
   plot_heatmap(cutoff = 3)
