@@ -92,18 +92,18 @@ plot_charinet <- function(adjacency = NULL,
                                angle = 20, length = grid::unit(0.14, "inches"),
                                ends = "last", type = "closed"))
   }
-  plot(p) +
-    ggraph::geom_node_point(fill = node_fill, size = igraph::V(g)$size,
-                            shape = 21, stroke = 0.5, colour = "black") +
-    ggraph::geom_node_text(ggplot2::aes(label = .data$name), size = 4.5,
-                           nudge_y = scales::rescale(igraph::V(g)$size,
+  plot(p + ggraph::geom_node_point(fill = node_fill, size = igraph::V(g)$size,
+                                   shape = 21, stroke = 0.5, colour = "black") +
+         ggraph::geom_node_text(ggplot2::aes(label = .data$name), size = 4.5,
+                                nudge_y = scales::rescale(igraph::V(g)$size,
                                                      to = c(0.06, 0.15))) +
-    ggraph::scale_edge_colour_gradient(low = "grey85", high = "grey25",
-                                       trans = "sqrt") +
-    ggplot2::labs(title = title) +
-    ggplot2::scale_x_continuous(expand = c(0.1, 0.1)) +
-    ggraph::theme_graph() +
-    ggplot2::theme(legend.position = "none",
-                   plot.title = ggplot2::element_text(size = 16, hjust = 0.5)) %>%
-    suppressWarnings()
+         ggraph::scale_edge_colour_gradient(low = "grey85", high = "grey25",
+                                            trans = "sqrt") +
+         ggplot2::labs(title = title) +
+         ggplot2::scale_x_continuous(expand = c(0.1, 0.1)) +
+         ggraph::theme_graph() +
+         ggplot2::theme(legend.position = "none",
+                        plot.title = ggplot2::element_text(size = 16,
+                                                           hjust = 0.5))) %>%
+         suppressWarnings()
 }
