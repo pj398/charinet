@@ -16,9 +16,8 @@ knitr::opts_chunk$set(
 # charinet <img src="man/figures/README-logo.png" align="right" width="139"/>
 
 <!-- badges: start -->
-
-[![CRAN status](https://www.r-pkg.org/badges/version/movienetdata)](https://cran.r-project.org/package=charinet)
-
+[![Travis build status](https://travis-ci.com/pj398/charinet.svg?branch=master)](https://travis-ci.com/pj398/charinet)
+[![CRAN status](https://www.r-pkg.org/badges/version/movienetdata)](https://cran.r-project.org/package=charinet) 
 <!-- badges: end -->
 
 This package provides a handful of tools for working with character interaction network data in R.
