@@ -25,6 +25,8 @@ This package provides a handful of tools for working with character interaction 
 
 Below are an important note on the data structure the package is designed to work with and a full demo of the key functions. The demo will make use of the data in the [`movienetdata`](https://github.com/pj398/movienetdata) package, which contains character interaction data from a number of popular films.
 
+If you have any questions or issues that aren't answered by this walkthrough, please [contact me](mailto:petejones398@gmail.com) or [raise an issue](https://github.com/pj398/charinet/issues).
+
 ## Installation
 
 You can install the development version from [GitHub](https://github.com/) with:
@@ -47,7 +49,7 @@ An example of this is shown below:
 |    3    |   1    |      0      |      1      |      1      |      1      |
 |    4    |   3    |      1      |      1      |      0      |      0      |
 
-In this example, there are four discrete interactions: Character 1 addresses Character 2, then Character 2 addresses Character 1, then Character 1 addresses Characters 2, 3 and 4 simultaneously, then Character 3 addresses Characters 1 and 2. The utility of this structure is that it clearly reflects the multicast nature of the events as there is only one row per event, and thus does not ask us to impose a pseudo-dyadic structure upon the interactions. <!-- For data which already exists in a dyadic format (with "from" and "to" columns for each event), the helper function `dyadic_to_multicast` converts this to the multicast format.-->
+In this example, there are four discrete interactions: Character 1 addresses Character 2, then Character 2 addresses Character 1, then Character 1 addresses Characters 2, 3 and 4 simultaneously, then Character 3 addresses Characters 1 and 2. The utility of this structure is that it clearly reflects the multicast nature of the events as there is only one row per event, and thus does not ask us to impose a pseudo-dyadic structure upon the interactions. For data which already exists in a dyadic format (with "from" and "to" columns for each event), the helper function `dyadic_to_multicast` (outlined below) converts this to the multicast format.
 
 It is worth making this structure absolutely clear because many of the functions in the package depend on it. Many functions take an argument `from`, which specifies the number of the column indicating sender IDs. In the example above, this would be `from = 2`, as the sender ID column is the second column. The function will then expect the dummy for character 1 to be in column *from+1*, the dummy for character 2 to be in column *from+2*, etc. Where there are other event-level variables of interest (for example, a scene ID variable, or a variable containing the text of what was said in an interaction), these should therefore be included as columns **prior to** the column indicating the sender IDs.
 
@@ -224,6 +226,43 @@ plot_nc(iron_man_scores$out_scores,
 ```
 
 By default, only characters whose (normalised) scores at the end of the narrative are greater than their scores at the beginning of the narrative are labelled. This can be overridden using `label_all = TRUE`.
+
+### Reshaping event lists between dyadic and multicast formats
+
+As noted earlier, the package expects a specific format that is not commonly found in the wild. Thus, the package provides two more helper functions for converting between dyadic and multicast event lists. In the dyadic format, each row is a dyadic interaction, with a "from" (sender) column and a "to" (receiver) column. There may also be a "time" or "event" column which indexes the sequence of events.
+
+Sometimes, it may be useful to convert the multicast event list to this dyadic format, for example so that it can be used with another package's functions which expect an edge-list style data structure.
+
+This can be done like so:
+
+```{r}
+iron_man_dyadic <- multicast_to_dyadic(iron_man$event_list, 
+                                       from = 3, 
+                                       force_seq = TRUE)
+
+head(iron_man_dyadic)
+```
+
+Note that the `force_seq` argument, if set to TRUE, will force events with multiple receivers into a false sequence, so that all events in the dyadic event list have a different event ID. In the *Iron Man* example above, this can be seen in the difference between the `time` variable and the `eventID` variable - the `time` variable computed by the function treats every dyadic event as happening subsequent to the previous one. When `force_seq = FALSE`, these multicast events will still be split into the dyadic components, but the computed `time` variable will indicate that these dyadic events are simultaneous (in the above example the `time` variable would be identical to the `eventID` variable).
+
+The more common case would be to convert this kind of dyadic format into the multicast format expected by `charinet`. This is done like so:
+
+```{r}
+iron_man_multicast <- dyadic_to_multicast(iron_man_dyadic, 
+                                          from = 4, 
+                                          to = 5, 
+                                          time_col = 2, 
+                                          char_names = iron_man$node_list$char_name)
+
+iron_man_multicast[1:6, 1:6]
+```
+
+Note that we specify both the `from` and `to` column indices, as well as a `time_col` indicating the column to be used to collect the timing of events. In this case, we specified `eventID` (column 2), because this is the column that captures the fact that some of the dyadic interactions are simultaneous (they are actually part of a multicast interaction). If we had specified `time_col = 1`, every event in the multicast event list would have exactly 1 sender and 1 receiver, preserving the false sequence we forced when creating `iron_man_dyadic`. When a `time_col` is specified, the function will collect these dyadic interactions spread across multiple rows in the dyadic event list and place them in the same row in the multicast event list. Thus, `iron_man_multicast` is equivalent to the `iron_man$event_list` we started with:
+
+```{r}
+identical(rowSums(iron_man_multicast[ , 2:ncol(iron_man_multicast)]), 
+          rowSums(iron_man$event_list[ , 3:ncol(iron_man$event_list)]))
+```
 
 ## References
 
