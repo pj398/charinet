@@ -3,6 +3,8 @@
 export("%>%")
 export(activity_heatmap)
 export(adj_from_events)
+export(dyadic_to_multicast)
+export(multicast_to_dyadic)
 export(narrative_centrality)
 export(nodes_from_events)
 export(plot_charinet)
