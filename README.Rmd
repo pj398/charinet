@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 
 <!-- badges: start -->
 [![Travis build status](https://travis-ci.com/pj398/charinet.svg?branch=master)](https://travis-ci.com/pj398/charinet)
-[![CRAN status](https://www.r-pkg.org/badges/version/movienetdata)](https://cran.r-project.org/package=charinet) 
+[![CRAN status](https://r-pkg.org/badges/version/charinet)](https://cran.r-project.org/package=charinet) 
 <!-- badges: end -->
 
 This package provides a handful of tools for working with character interaction network data in R.
@@ -50,7 +50,7 @@ An example of this is shown below:
 
 In this example, there are four discrete interactions: Character 1 addresses Character 2, then Character 2 addresses Character 1, then Character 1 addresses Characters 2, 3 and 4 simultaneously, then Character 3 addresses Characters 1 and 2. The utility of this structure is that it clearly reflects the multicast nature of the events as there is only one row per event, and thus does not ask us to impose a pseudo-dyadic structure upon the interactions. For data which already exists in a dyadic format (with "from" and "to" columns for each event), the helper function `dyadic_to_multicast` (outlined below) converts this to the multicast format.
 
-It is worth making this structure absolutely clear because many of the functions in the package depend on it. Many functions take an argument `from`, which specifies the number of the column indicating sender IDs. In the example above, this would be `from = 2`, as the sender ID column is the second column. The function will then expect the dummy for character 1 to be in column *from+1*, the dummy for character 2 to be in column *from+2*, etc. Where there are other event-level variables of interest (for example, a scene ID variable, or a variable containing the text of what was said in an interaction), these should therefore be included as columns **prior to** the column indicating the sender IDs.
+It is worth making this structure absolutely clear because many of the functions in the package depend on it. Many functions take an argument `from`, which specifies the number of the column indicating sender ID numbers. In the example above, this would be `from = 2`, as the sender ID column is the second column. The function will then expect the dummy for character 1 to be in column *from+1*, the dummy for character 2 to be in column *from+2*, etc. Where there are other event-level variables of interest (for example, a scene ID variable, or a variable containing the text of what was said in an interaction), these should therefore be included as columns **prior to** the column indicating the sender IDs.
 
 ## Demo
 

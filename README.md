@@ -8,7 +8,7 @@
 [![Travis build
 status](https://travis-ci.com/pj398/charinet.svg?branch=master)](https://travis-ci.com/pj398/charinet)
 [![CRAN
-status](https://www.r-pkg.org/badges/version/movienetdata)](https://cran.r-project.org/package=charinet)
+status](https://r-pkg.org/badges/version/charinet)](https://cran.r-project.org/package=charinet)
 <!-- badges: end -->
 
 This package provides a handful of tools for working with character
@@ -71,13 +71,13 @@ to the multicast format.
 
 It is worth making this structure absolutely clear because many of the
 functions in the package depend on it. Many functions take an argument
-`from`, which specifies the number of the column indicating sender IDs.
-In the example above, this would be `from = 2`, as the sender ID column
-is the second column. The function will then expect the dummy for
-character 1 to be in column *from+1*, the dummy for character 2 to be in
-column *from+2*, etc. Where there are other event-level variables of
-interest (for example, a scene ID variable, or a variable containing the
-text of what was said in an interaction), these should therefore be
+`from`, which specifies the number of the column indicating sender ID
+numbers. In the example above, this would be `from = 2`, as the sender
+ID column is the second column. The function will then expect the dummy
+for character 1 to be in column *from+1*, the dummy for character 2 to
+be in column *from+2*, etc. Where there are other event-level variables
+of interest (for example, a scene ID variable, or a variable containing
+the text of what was said in an interaction), these should therefore be
 included as columns **prior to** the column indicating the sender IDs.
 
 ## Demo

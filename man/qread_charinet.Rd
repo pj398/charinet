@@ -15,8 +15,8 @@ characters in the events list. If not supplied, it will be automatically
 generated from the event list, with character names being inferred from how
 they appear in the event list.}
 
-\item{from}{The column containing the sender IDs, followed by dummy variables
-for each character.}
+\item{from}{The column containing the numeric sender IDs, followed by dummy
+variables for each character.}
 
 \item{check_errors}{If TRUE, the function checks for common data input
 errors. It looks for characters with self-ties, empty rows where no
