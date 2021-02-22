@@ -9,8 +9,6 @@
 status](https://travis-ci.com/pj398/charinet.svg?branch=master)](https://travis-ci.com/pj398/charinet)
 [![CRAN
 status](https://r-pkg.org/badges/version/charinet)](https://cran.r-project.org/package=charinet)
-[![Codecov test
-coverage](https://codecov.io/gh/pj398/charinet/branch/master/graph/badge.svg)](https://codecov.io/gh/pj398/charinet?branch=master)
 <!-- badges: end -->
 
 This package provides a handful of tools for working with character
