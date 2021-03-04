@@ -56,6 +56,7 @@ plot_charinet <- function(adjacency = NULL,
     char_names <- rownames(adjacency)
   }
   igraph::V(g)$name <- char_names
+  igraph::V(g)$colour <- node_fill
 
   if(is.null(degree)) {
     degree <- rowSums(adjacency)
@@ -92,7 +93,8 @@ plot_charinet <- function(adjacency = NULL,
                                angle = 20, length = grid::unit(0.14, "inches"),
                                ends = "last", type = "closed"))
   }
-  plot(p + ggraph::geom_node_point(fill = node_fill, size = igraph::V(g)$size,
+  plot(p + ggraph::geom_node_point(fill = igraph::V(g)$colour,
+                                   size = igraph::V(g)$size,
                                    shape = 21, stroke = 0.5, colour = "black") +
          ggraph::geom_node_text(ggplot2::aes(label = .data$name), size = 4.5,
                                 nudge_y = scales::rescale(igraph::V(g)$size,
