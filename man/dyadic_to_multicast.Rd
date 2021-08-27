@@ -41,7 +41,7 @@ This function converts a time-ordered event list in a dyadic
   the multicast event list.
 }
 \examples{
-tfa <- movienetdata::starwars_01
+tfa <- movienetdata::starwars_tfa
 # Convert The Force Awakens event list to dyadic format
 tfa_dyads <- multicast_to_dyadic(tfa$event_list,
                                  from = 3)

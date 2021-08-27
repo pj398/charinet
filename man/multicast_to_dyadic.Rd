@@ -26,7 +26,7 @@ Convert a time-ordered multicast event list into a dyadic
   from-to format, preserving other event-level variables.
 }
 \examples{
-tfa <- movienetdata::starwars_01
+tfa <- movienetdata::starwars_tfa
 # Convert The Force Awakens event list to dyadic format
 tfa_dyads <- multicast_to_dyadic(tfa$event_list,
                                  from = 3)

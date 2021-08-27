@@ -51,7 +51,7 @@ Create a quick visualisation of the aggregated character
   interaction network.
 }
 \examples{
-tfa <- movienetdata::starwars_01
+tfa <- movienetdata::starwars_tfa
 \dontrun{
 # Plot the network, dropping characters who don't speak more than 3 lines
 plot_charinet(adjacency = tfa$adjacency,

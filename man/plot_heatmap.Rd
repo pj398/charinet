@@ -24,7 +24,7 @@ Create a quick heatmap visualisation of character activity by
   story chunks using ggplot2.
 }
 \examples{
-tfa <- movienetdata::starwars_01
+tfa <- movienetdata::starwars_tfa
 activity_heatmap(tfa$event_list,
               char_names = tfa$node_list$char_name,
               n_chunks = 4) \%>\%

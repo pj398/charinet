@@ -1,5 +1,5 @@
 test_that("heatmap functions work", {
-  tfa <- movienetdata::starwars_01
+  tfa <- movienetdata::starwars_tfa
   tfa_hm <- activity_heatmap(event_list = tfa$event_list,
                              char_names = tfa$node_list$char_name,
                              n_chunks = 10, from = 3)

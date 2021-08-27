@@ -27,7 +27,7 @@ Create a quick line graph showing character trajectories through
   narrative time based on their narrative centrality scores.
 }
 \examples{
-tfa <- movienetdata::starwars_01
+tfa <- movienetdata::starwars_tfa
 tfa_scores <- narrative_centrality(tfa$event_list,
                                    char_names = tfa[[2]]$char_name,
                                    wp = 0.01,

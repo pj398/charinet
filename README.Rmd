@@ -59,7 +59,7 @@ It is worth making this structure absolutely clear because many of the functions
 First, let's read in the character interaction network data for *Iron Man* (2008).
 
 ```{r}
-iron_man <- movienetdata::marvel_01
+iron_man <- movienetdata::mcu01_ironman
 ```
 
 This data is a list containing three elements:
@@ -87,7 +87,7 @@ This function uses regular expressions, and is thus heavily dependent on the scr
 Some caveats: many of these regular expressions depend on indentation, so the function won't work on screenplays that do not use consistent indentation patterns (or which do not indent at all). The function is also likely to fail if the PDF is watermarked, as this interferes with the ability to detect text clearly in the PDF. Finally, the presence of conventional annotations such as "(V. O.)" and "(O. S.)" are used to help identify which elements are the lines corresponding to speaking character names, and so the parser may not work if there are no such annotations in the screenplay (this would be unusual but worth mentioning).
 
 ```{r include=FALSE}
-my_local_dir <- "C:/Users/PJ/Downloads/"
+my_local_dir <- "/Users/petejones/Dropbox/Work/Projects/bond/screenplays/"
 ```
 
 To show the function in action, we'll use it to read in the screenplay for *From Russia with Love* (1963), downloaded from [here](https://bulletproofscreenwriting.tv/james-bond-movies-collection-screenplay-download/).
@@ -134,8 +134,8 @@ The package contains a function `plot_charinet` which can produce a quick networ
 plot_charinet(adjacency = iron_man$adjacency, 
               char_names = iron_man$node_list$char_name, 
               degree = iron_man$node_list$nlines, 
-              node_fill = ifelse(iron_man$node_list$gender == "Male", 
-                                 "#55467a", "#ded649"), 
+              node_fill = ifelse(iron_man$node_list$char_female, 
+                                 "#ded649", "#55467a"), 
               parallel_edges = TRUE, 
               title = "Dialogue in Iron Man (2008)")
 ```

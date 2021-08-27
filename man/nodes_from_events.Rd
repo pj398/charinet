@@ -33,7 +33,7 @@ A helper function for extracting a simple list of nodes based on
   followed by columns containing binary dummy variables for each character).
 }
 \examples{
-tfa_events <- movienetdata::starwars_01$event_list
+tfa_events <- movienetdata::starwars_tfa$event_list
 tfa_nodes <- nodes_from_events(event_list = tfa_events,
                                from = 3,
                                receivers = TRUE)

@@ -24,7 +24,7 @@
 #' @return An adjacency matrix aggregated from interactions in an event list.
 #'
 #' @examples
-#' tfa <- movienetdata::starwars_01
+#' tfa <- movienetdata::starwars_tfa
 #' tfa_adj <- adj_from_events(event_list = tfa$event_list,
 #'                            char_names = tfa$node_list$char_name,
 #'                            check_errors = TRUE)
@@ -109,7 +109,7 @@ adj_from_events <- function(event_list,
 #'   containing node-level variables.
 #'
 #' @examples
-#' tfa_events <- movienetdata::starwars_01$event_list
+#' tfa_events <- movienetdata::starwars_tfa$event_list
 #' tfa_nodes <- nodes_from_events(event_list = tfa_events,
 #'                                from = 3,
 #'                                receivers = TRUE)
@@ -169,7 +169,7 @@ check_sugs <- function(suggest) {
 #' @return A time-ordered multicast event list as a matrix.
 #'
 #' @examples
-#' tfa <- movienetdata::starwars_01
+#' tfa <- movienetdata::starwars_tfa
 #' # Convert The Force Awakens event list to dyadic format
 #' tfa_dyads <- multicast_to_dyadic(tfa$event_list,
 #'                                  from = 3)
@@ -243,7 +243,7 @@ dyadic_to_multicast <- function(event_list,
 #' @return A time-ordered dyadic event list (as a matrix).
 #'
 #' @examples
-#' tfa <- movienetdata::starwars_01
+#' tfa <- movienetdata::starwars_tfa
 #' # Convert The Force Awakens event list to dyadic format
 #' tfa_dyads <- multicast_to_dyadic(tfa$event_list,
 #'                                  from = 3)

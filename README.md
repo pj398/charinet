@@ -88,7 +88,7 @@ First, let’s read in the character interaction network data for *Iron
 Man* (2008).
 
 ``` r
-iron_man <- movienetdata::marvel_01
+iron_man <- movienetdata::mcu01_ironman
 ```
 
 This data is a list containing three elements:
@@ -114,25 +114,25 @@ head(iron_man$event_list[, 1:6])
 
 ``` r
 iron_man$node_list
-#>    char_ID          char_name char_female nlines linesin gender
-#> 1        1         Tony Stark           0    353     368   Male
-#> 2        2              Jimmy           0      5      11   Male
-#> 3        3       James Rhodes           0     68      64   Male
-#> 4        4      Obadiah Stane           0     80      62   Male
-#> 5        5 Christine Everhart           1     25      28 Female
-#> 6        6        Happy Hogan           0      4       7   Male
-#> 7        7             JARVIS           0     38      40   Male
-#> 8        8       Pepper Potts           1    123     135 Female
-#> 9        9    General Gabriel           0      1       2   Male
-#> 10      10          Ho Yinsen           0     60      54   Male
-#> 11      11         Abu Bakaar           0      8       3   Male
-#> 12      12               Raza           0     15      12   Male
-#> 13      13       Phil Coulson           0     24      25   Male
-#> 14      14            Ramirez           1      2       5 Female
-#> 15      15        Major Allen           0      4       2   Male
-#> 16      16       William Riva           0      4       3   Male
-#> 17      17              Pratt           0      3       6   Male
-#> 18      18          Nick Fury           0      3       2   Male
+#>    char_ID          char_name char_female nlines linesin
+#> 1        1         Tony Stark           0    353     368
+#> 2        2              Jimmy           0      5      11
+#> 3        3       James Rhodes           0     68      64
+#> 4        4      Obadiah Stane           0     80      62
+#> 5        5 Christine Everhart           1     25      28
+#> 6        6        Happy Hogan           0      4       7
+#> 7        7             JARVIS           0     38      40
+#> 8        8       Pepper Potts           1    123     135
+#> 9        9    General Gabriel           0      1       2
+#> 10      10          Ho Yinsen           0     60      54
+#> 11      11         Abu Bakaar           0      8       3
+#> 12      12               Raza           0     15      12
+#> 13      13       Phil Coulson           0     24      25
+#> 14      14            Ramirez           1      2       5
+#> 15      15        Major Allen           0      4       2
+#> 16      16       William Riva           0      4       3
+#> 17      17              Pratt           0      3       6
+#> 18      18          Nick Fury           0      3       2
 ```
 
 ### Reading in data from a PDF of a screenplay:
@@ -206,12 +206,12 @@ events, `receivers = TRUE` will add this variable to the nodelist.
 # Peek at the nodelist, ranked by number of lines spoken
 head(frwl_nodes[order(frwl_nodes$nlines, decreasing = TRUE), ])
 #>    charID char_name nlines
-#> 15     15      BOND    306
-#> 24     24     KERIM    103
-#> 10     10     TANIA     87
-#> 47     47     GRANT     71
-#> 7       7      KLEB     45
-#> 6       6   BLOFELD     27
+#> 19     19      BOND    305
+#> 28     28     KERIM    103
+#> 14     14     TANIA     87
+#> 51     51     GRANT     71
+#> 10     10      KLEB     45
+#> 9       9   BLOFELD     27
 ```
 
 And now we can aggregate the events into an adjacency matrix format:
@@ -221,13 +221,20 @@ frwl_adj <- adj_from_events(event_list = frwl_events)
 
 # Peek at the first few characters
 frwl_adj[1:6, 1:6]
-#>            MORZENY KRONSTEEN 1ST UMPIRE ATTENDANT MACADAMS BLOFELD
-#> MORZENY          0         0          0         0        0       0
-#> KRONSTEEN        0         0          1         1        0      11
-#> 1ST UMPIRE       0         3          0         3        2       0
-#> ATTENDANT        0         2          3         0        3       0
-#> MACADAMS         0         0          1         1        0       0
-#> BLOFELD          0        17          0         0        0       0
+#>                   MORZENY MATCH    FINAL KRONSTEEN 1ST UMPIRE ATTENDANT
+#> MORZENY                 0              0         0          0         0
+#> MATCH    FINAL          0              0         1          1         1
+#> KRONSTEEN               0              1         0          1         1
+#> 1ST UMPIRE              0              1         2          0         3
+#> ATTENDANT               0              1         1          3         0
+#> 'YOU ARE REQUIRED       0              1         1          1         1
+#>                   'YOU ARE REQUIRED
+#> MORZENY                           0
+#> MATCH    FINAL                    1
+#> KRONSTEEN                         1
+#> 1ST UMPIRE                        3
+#> ATTENDANT                         3
+#> 'YOU ARE REQUIRED                 0
 ```
 
 ### Plotting as a network
@@ -240,8 +247,8 @@ quick network visualisation of the character interaction data using
 plot_charinet(adjacency = iron_man$adjacency, 
               char_names = iron_man$node_list$char_name, 
               degree = iron_man$node_list$nlines, 
-              node_fill = ifelse(iron_man$node_list$gender == "Male", 
-                                 "#55467a", "#ded649"), 
+              node_fill = ifelse(iron_man$node_list$char_female, 
+                                 "#ded649", "#55467a"), 
               parallel_edges = TRUE, 
               title = "Dialogue in Iron Man (2008)")
 ```

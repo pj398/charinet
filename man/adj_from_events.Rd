@@ -36,7 +36,7 @@ A helper function for extracting an adjacency matrix based on
   character).
 }
 \examples{
-tfa <- movienetdata::starwars_01
+tfa <- movienetdata::starwars_tfa
 tfa_adj <- adj_from_events(event_list = tfa$event_list,
                            char_names = tfa$node_list$char_name,
                            check_errors = TRUE)
