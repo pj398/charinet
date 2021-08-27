@@ -1,7 +1,7 @@
 Package: charinet
 Type: Package
 Title: A Package for Character Interaction Network Analysis
-Version: 0.0.2.9007
+Version: 0.0.2.9008
 Authors@R: person("Pete", "Jones", email = "petejones398@gmail.com", 
     role=c("aut", "cre"))
 URL: https://github.com/pj398/charinet
@@ -13,17 +13,18 @@ Description: This package contains a number of functions for working with
 Depends: 
     R (>= 3.6.0)
 Imports: 
+    dplyr (>= 1.0.0),
     magrittr, 
-    movienetdata (>= 0.1.1), 
+    movienetdata (>= 0.1.1),
+    pdftools (>= 3.0.0), 
     rlang (>= 0.4.6),
-    stats (>= 3.6.3),
-    textreadr (>= 1.0.2) 
+    stats (>= 3.6.3), 
+    stringr (>= 1.4.0)
 Remotes: 
     pj398/movienetdata
 Suggests:
     covr, 
     directlabels,
-    dplyr (>= 1.0.0),
     ggplot2 (>= 3.3.2),
     ggraph (>= 2.0.4),
     graphlayouts (>= 0.7.1),

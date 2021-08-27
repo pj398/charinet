@@ -1,7 +1,7 @@
 #' Tag a well-formatted screenplay in PDF format and extract event list
 #'
 #' @description This function reads in a well-formatted screenplay (via
-#'   \code{textreadr::read_pdf}), parses it and tags each line based on a series
+#'   \code{pdftools::pdf_text()}), parses it and tags each line based on a series
 #'   of regular expressions. The function attempts to tag each line as either a
 #'   scene boundary, scene description, character name, dialogue, dialogue
 #'   description, stage direction, or page information. These tags are then used
@@ -43,8 +43,30 @@
 #'
 #' @export
 screenplay_to_events <- function(pdf_file, window = 5) {
+  # Function for reading in PDF and turning into a useful dataframe
+  pdf_to_df <- function(pdf_file) {
+    pdf_raw <- pdftools::pdf_text(pdf_file)
+
+    pdf_line_split <- stringr::str_split(pdf_raw, "\n")
+
+    pdf_lines <- vector(mode = "list", length = length(pdf_line_split))
+    pdf_df <- vector(mode = "list", length = length(pdf_line_split))
+
+    for(i in 1:length(pdf_lines)) {
+      pdf_lines[[i]] <- pdf_line_split[[i]][-which(pdf_line_split[[i]] == "")]
+      pdf_df[[i]] <- cbind.data.frame(
+        page_id = rep(i, length(pdf_lines[[i]])),
+        element_id = 1:length(pdf_lines[[i]]),
+        text = pdf_lines[[i]]
+      )
+    }
+
+    return(dplyr::bind_rows(pdf_df))
+  }
+
+  # Function for tagging each line of the screenplay based on regexes
   tag_screenplay <- function(...) {
-    lines <- textreadr::read_pdf(pdf_file, trim = FALSE)
+    lines <- pdf_to_df(pdf_file)
     lines$tag <- vector("character", length = length(nrow(lines)))
     # Define the main regular expressions as variables
     scene_regex <- "(-|[[:space:]])*\\<(INT|EXT)[-.:]? "

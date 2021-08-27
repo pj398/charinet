@@ -27,7 +27,7 @@ A matrix containing a time-ordered multicast event list. The first
 }
 \description{
 This function reads in a well-formatted screenplay (via
-  \code{textreadr::read_pdf}), parses it and tags each line based on a series
+  \code{pdftools::pdf_text()}), parses it and tags each line based on a series
   of regular expressions. The function attempts to tag each line as either a
   scene boundary, scene description, character name, dialogue, dialogue
   description, stage direction, or page information. These tags are then used
