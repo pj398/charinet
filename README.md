@@ -21,7 +21,7 @@ will make use of the data in the
 contains character interaction data from a number of popular films.
 
 If you have any questions or issues that aren’t answered by this
-walkthrough, please [contact me](mailto:petejones398@gmail.com) or
+walkthrough, please [contact me](mailto:petejonesphd@gmail.com) or
 [raise an issue](https://github.com/pj398/charinet/issues).
 
 ## Installation
@@ -102,7 +102,7 @@ The data look like so (only the first few columns are shown here for
 clarity):
 
 ``` r
-head(iron_man$event_list[, 1:6])
+head(iron_man$event_list[ , 1:6])
 #>      eventID sceneID speakerID Tony.Stark..1. Jimmy..2. James.Rhodes..3.
 #> [1,]       1       1         1              0         1                0
 #> [2,]       2       1         2              1         0                0
@@ -274,7 +274,7 @@ plot_charinet(adjacency = frwl_adj,
 
 In this example, the `cutoff` argument was used to restrict the network
 to only those characters who speak more than 10 lines overall (which is
-useful for filtering our many of the noisy unnamed characters detected
+useful for filtering out many of the noisy unnamed characters detected
 from the screenplay parser).
 
 Also, as we didn’t specify `parallel_edges = TRUE`, the plot reverted to
@@ -312,7 +312,7 @@ frwl_hm <- activity_heatmap(event_list = frwl_events,
                             from = 3)
 ```
 
-These character-by-chunk matrices are useful on their own, but most
+These character-by-chunk matrices are useful on their own, but are most
 revealing when visualised as a heatmap. The plot\_heatmap function
 provides a quick way to do this using `ggplot2`:
 

@@ -24,7 +24,7 @@ This package provides a handful of tools for working with character interaction 
 
 Below are an important note on the data structure the package is designed to work with and a full demo of the key functions. The demo will make use of the data in the [`movienetdata`](https://github.com/pj398/movienetdata) package, which contains character interaction data from a number of popular films.
 
-If you have any questions or issues that aren't answered by this walkthrough, please [contact me](mailto:petejones398@gmail.com) or [raise an issue](https://github.com/pj398/charinet/issues).
+If you have any questions or issues that aren't answered by this walkthrough, please [contact me](mailto:petejonesphd@gmail.com) or [raise an issue](https://github.com/pj398/charinet/issues).
 
 ## Installation
 
@@ -71,7 +71,7 @@ names(iron_man)
 The data look like so (only the first few columns are shown here for clarity):
 
 ```{r}
-head(iron_man$event_list[, 1:6])
+head(iron_man$event_list[ , 1:6])
 ```
 
 ```{r}
@@ -149,7 +149,7 @@ plot_charinet(adjacency = frwl_adj,
               cutoff = 10)
 ```
 
-In this example, the `cutoff` argument was used to restrict the network to only those characters who speak more than 10 lines overall (which is useful for filtering our many of the noisy unnamed characters detected from the screenplay parser).
+In this example, the `cutoff` argument was used to restrict the network to only those characters who speak more than 10 lines overall (which is useful for filtering out many of the noisy unnamed characters detected from the screenplay parser).
 
 Also, as we didn't specify `parallel_edges = TRUE`, the plot reverted to the default behaviour of plotting double-sided arrows instead of two parallel arrows for directed ties.
 
@@ -176,7 +176,7 @@ frwl_hm <- activity_heatmap(event_list = frwl_events,
                             from = 3)
 ```
 
-These character-by-chunk matrices are useful on their own, but most revealing when visualised as a heatmap. The plot_heatmap function provides a quick way to do this using `ggplot2`:
+These character-by-chunk matrices are useful on their own, but are most revealing when visualised as a heatmap. The plot_heatmap function provides a quick way to do this using `ggplot2`:
 
 ```{r fig.width=10, fig.height=6}
 plot_heatmap(iron_man_hm, title = "Activity heatmap for Iron Man by scene")
