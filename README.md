@@ -21,8 +21,8 @@ will make use of the data in the
 contains character interaction data from a number of popular films.
 
 If you have any questions or issues that aren’t answered by this
-walkthrough, please [contact me](mailto:petejonesphd@gmail.com) or
-[raise an issue](https://github.com/pj398/charinet/issues).
+walkthrough, please [contact me](mailto:pete@petejon.es) or [raise an
+issue](https://github.com/pj398/charinet/issues).
 
 ## Installation
 
@@ -313,7 +313,7 @@ frwl_hm <- activity_heatmap(event_list = frwl_events,
 ```
 
 These character-by-chunk matrices are useful on their own, but are most
-revealing when visualised as a heatmap. The plot\_heatmap function
+revealing when visualised as a heatmap. The plot_heatmap function
 provides a quick way to do this using `ggplot2`:
 
 ``` r

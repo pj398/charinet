@@ -24,7 +24,7 @@ This package provides a handful of tools for working with character interaction 
 
 Below are an important note on the data structure the package is designed to work with and a full demo of the key functions. The demo will make use of the data in the [`movienetdata`](https://github.com/pj398/movienetdata) package, which contains character interaction data from a number of popular films.
 
-If you have any questions or issues that aren't answered by this walkthrough, please [contact me](mailto:petejonesphd@gmail.com) or [raise an issue](https://github.com/pj398/charinet/issues).
+If you have any questions or issues that aren't answered by this walkthrough, please [contact me](mailto:pete@petejon.es) or [raise an issue](https://github.com/pj398/charinet/issues).
 
 ## Installation
 
